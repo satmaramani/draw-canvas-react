@@ -101,13 +101,6 @@ const CanvasDrawingApp = () => {
       clientY = event.touches[0].clientY;
     } else {
       clientX = event.clientX;
-      clientY = event.clientX; // This was a bug: should be event.clientY
-    }
-
-    // Corrected clientY assignment
-    if (event.touches && event.touches.length > 0) {
-      clientY = event.touches[0].clientY;
-    } else {
       clientY = event.clientY;
     }
 
@@ -341,12 +334,13 @@ const CanvasDrawingApp = () => {
       </div>
 
       {/* Canvas Container */}
-      <div className="border-4 border-gray-300 rounded-xl overflow-hidden shadow-2xl bg-white w-full max-w-full md:max-w-screen-lg lg:max-w-screen-xl">
+      <div className="rounded-xl overflow-hidden shadow-2xl bg-white w-full max-w-full md:max-w-screen-lg lg:max-w-screen-xl">
         <canvas
           ref={canvasRef}
           width={canvasWidth}
           height={canvasHeight}
-          className="bg-white block w-full h-auto" // Canvas fills its container width, height adjusts proportionally
+          // Applying direct inline style for border to ensure visibility
+          style={{ border: '5px solid #333', backgroundColor: '#FFFFFF', display: 'block', width: '100%', height: 'auto', boxSizing: 'border-box' }}
         ></canvas>
       </div>
     </div>
