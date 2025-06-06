@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Pencil, Paintbrush, Eraser, ZoomIn, ZoomOut, Trash2 } from 'lucide-react'; // Importing icons
+import samImage from './assets/sam.png';
 
 const CanvasDrawingApp = () => {
   // useRef for the canvas element to directly access its DOM properties
@@ -237,12 +238,36 @@ const CanvasDrawingApp = () => {
     setZoomLevel(prevZoom => Math.max(0.25, prevZoom / 1.1)); // Decrease zoom level by 10%, with a minimum of 25%
   };
 
+  // --- NEW: Custom cursor styles ---
+  // Using custom cursors generated from SVG to display tool icons
+  const getCursorStyle = useCallback(() => {
+    const defaultIconSize = 24; // Base size for the icons
+    const cursorOffsetX = defaultIconSize / 2; // Half width for center point
+    const cursorOffsetY = defaultIconSize - 4; // Bottom-left or slightly above for pen/brush tip
+
+    switch (selectedTool) {
+      case 'pen':
+        // A black pen icon, centered for better precision, with fallback
+        return `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='${defaultIconSize}' height='${defaultIconSize}' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 20h9'/><path d='M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z'/></svg>") ${cursorOffsetX} ${cursorOffsetY}, auto`;
+      case 'brush':
+        // A black paintbrush icon, centered for better precision, with fallback
+        return `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='${defaultIconSize}' height='${defaultIconSize}' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 20h9'/><path d='M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z'/><path d='M18 13l-1.5-1.5'/></svg>") ${cursorOffsetX} ${cursorOffsetY}, auto`;
+      case 'eraser':
+        // An eraser icon, centered for better precision, with fallback
+        // Using a slightly different SVG to differentiate from pen/brush
+        return `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='${defaultIconSize}' height='${defaultIconSize}' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M19 21l-7-7 7-7 7 7-7 7z'/><path d='M5 12l-2 2L12 21l2-2L5 12z'/></svg>") ${cursorOffsetX} ${cursorOffsetY}, auto`;
+      default:
+        return 'default'; // Default cursor for other cases
+    }
+  }, [selectedTool]); // Re-create if selectedTool changes
+
   return (
     // Main container for the application, styled with Tailwind CSS for responsiveness and aesthetics
     <div className="flex flex-col items-center p-4 min-h-screen bg-gray-100 font-sans antialiased">
+        <img src={samImage} alt="Sam" width="50" height="50" /> <br /><a TARGET="_BLANK" href="https://www.linkedin.com/in/sampurna/"> Sam Atmaramani </a>
       {/* Application Title */}
       <h1 className="text-4xl font-extrabold text-gray-800 mb-6 drop-shadow-md">
-        React Canvas Drawing App
+        Sam's React Canvas Drawing App
       </h1>
 
       {/* Controls Section */}
@@ -251,7 +276,10 @@ const CanvasDrawingApp = () => {
         <button
           onClick={() => setSelectedTool('pen')}
           className={`flex items-center justify-center px-4 py-2 rounded-xl font-semibold transition duration-300 ease-in-out transform hover:scale-105
-            ${selectedTool === 'pen' ? 'bg-blue-600 text-white shadow-md' : 'bg-blue-100 text-blue-800 hover:bg-blue-200'}`
+            ${selectedTool === 'pen'
+              ? 'bg-blue-600 text-white shadow-lg ring-4 ring-blue-300' // Added ring for more prominent highlight
+              : 'bg-blue-100 text-blue-800 hover:bg-blue-200'
+            }`
           }
           title="Pen Tool"
         >
@@ -261,7 +289,10 @@ const CanvasDrawingApp = () => {
         <button
           onClick={() => setSelectedTool('brush')}
           className={`flex items-center justify-center px-4 py-2 rounded-xl font-semibold transition duration-300 ease-in-out transform hover:scale-105
-            ${selectedTool === 'brush' ? 'bg-green-600 text-white shadow-md' : 'bg-green-100 text-green-800 hover:bg-green-200'}`
+            ${selectedTool === 'brush'
+              ? 'bg-green-600 text-white shadow-lg ring-4 ring-green-300' // Added ring for more prominent highlight
+              : 'bg-green-100 text-green-800 hover:bg-green-200'
+            }`
           }
           title="Brush Tool"
         >
@@ -271,7 +302,10 @@ const CanvasDrawingApp = () => {
         <button
           onClick={() => setSelectedTool('eraser')}
           className={`flex items-center justify-center px-4 py-2 rounded-xl font-semibold transition duration-300 ease-in-out transform hover:scale-105
-            ${selectedTool === 'eraser' ? 'bg-yellow-600 text-white shadow-md' : 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'}`
+            ${selectedTool === 'eraser'
+              ? 'bg-red-600 text-white shadow-lg ring-4 ring-red-300' // Added ring for more prominent highlight
+              : 'bg-red-100 text-red-800 hover:bg-red-200'
+            }`
           }
           title="Eraser Tool"
         >
@@ -340,7 +374,15 @@ const CanvasDrawingApp = () => {
           width={canvasWidth}
           height={canvasHeight}
           // Applying direct inline style for border to ensure visibility
-          style={{ border: '5px solid #333', backgroundColor: '#FFFFFF', display: 'block', width: '100%', height: 'auto', boxSizing: 'border-box' }}
+          style={{
+            border: '5px solid #333',
+            backgroundColor: '#FFFFFF',
+            display: 'block',
+            width: '100%',
+            height: 'auto',
+            boxSizing: 'border-box',
+            cursor: getCursorStyle() // Dynamically set the cursor here
+          }}
         ></canvas>
       </div>
     </div>
