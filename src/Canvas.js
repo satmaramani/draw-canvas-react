@@ -1,10 +1,11 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { Pencil, Paintbrush, Eraser, ZoomIn, ZoomOut, Trash2 } from 'lucide-react'; // Importing icons
-import samImage from './assets/sam.png';
+import { Pencil, Paintbrush, Eraser, ZoomIn, ZoomOut, Trash2, Image as ImageIcon } from 'lucide-react'; // Importing icons, added ImageIcon
 
 const CanvasDrawingApp = () => {
   // useRef for the canvas element to directly access its DOM properties
   const canvasRef = useRef(null);
+  // useRef for the hidden file input to trigger it programmatically
+  const fileInputRef = useRef(null);
 
   // useRefs for mutable states that are frequently accessed by event handlers
   // This helps prevent stale closures in event listeners which are set up once
@@ -23,8 +24,9 @@ const CanvasDrawingApp = () => {
   const [zoomLevel, setZoomLevel] = useState(1); // Current zoom level for the canvas content
 
   // State to store all drawn paths. Each path is an object containing tool, size, color, and points.
+  // Images are also stored as paths with a 'type' property.
   // This allows redrawing the canvas content when its size changes or when cleared/restored.
-  const [paths, setPaths] = useState([]); // Array of { tool, size, color, points: [{x, y}] }
+  const [paths, setPaths] = useState([]); // Array of { tool, size, color, points: [{x, y}] } or { type: 'image', img: HTMLImageElement, x, y, width, height }
 
   // Effect to keep refs synchronized with their corresponding state values
   // This ensures event handlers (which use refs) always have the latest tool, size, and color
@@ -51,32 +53,43 @@ const CanvasDrawingApp = () => {
 
     // Iterate over each stored path and draw it
     paths.forEach(path => {
-      // A path needs at least two points to form a line
-      if (path.points.length < 2) return;
+      if (path.type === 'image') {
+        // Draw image, adjusting position and size by zoom level (already scaled in path.width/height)
+        ctx.drawImage(
+          path.img,
+          path.x, // x and y are already pre-calculated in canvas coordinates
+          path.y,
+          path.width,
+          path.height
+        );
+      } else {
+        // A path needs at least two points to form a line
+        if (path.points.length < 2) return;
 
-      ctx.beginPath(); // Start a new path for each line segment
-      ctx.moveTo(path.points[0].x, path.points[0].y); // Move to the first point
+        ctx.beginPath(); // Start a new path for each line segment
+        ctx.moveTo(path.points[0].x, path.points[0].y); // Move to the first point
 
-      // Draw lines to subsequent points
-      for (let i = 1; i < path.points.length; i++) {
-        ctx.lineTo(path.points[i].x, path.points[i].y);
+        // Draw lines to subsequent points
+        for (let i = 1; i < path.points.length; i++) {
+          ctx.lineTo(path.points[i].x, path.points[i].y);
+        }
+
+        ctx.strokeStyle = path.color; // Set stroke color
+
+        // Determine line width based on the tool and adjust for zoom level
+        // Eraser uses the brush size for its stroke width
+        const lineWidth = path.tool === 'pen' ? 2 : path.size;
+        ctx.lineWidth = lineWidth / zoomLevel; // Divide by zoom level for consistent appearance
+
+        ctx.lineCap = 'round';       // Make line endings rounded
+        ctx.lineJoin = 'round';      // Make line joins rounded
+
+        // Set globalCompositeOperation for eraser functionality
+        // 'destination-out' makes new shapes transparent where they overlap with existing ones.
+        ctx.globalCompositeOperation = path.tool === 'eraser' ? 'destination-out' : 'source-over';
+
+        ctx.stroke();                // Render the path
       }
-
-      ctx.strokeStyle = path.color; // Set stroke color
-
-      // Determine line width based on the tool and adjust for zoom level
-      // Eraser uses the brush size for its stroke width
-      const lineWidth = path.tool === 'pen' ? 2 : path.size;
-      ctx.lineWidth = lineWidth / zoomLevel;
-
-      ctx.lineCap = 'round';       // Make line endings rounded
-      ctx.lineJoin = 'round';      // Make line joins rounded
-
-      // Set globalCompositeOperation for eraser functionality
-      // 'destination-out' makes new shapes transparent where they overlap with existing ones.
-      ctx.globalCompositeOperation = path.tool === 'eraser' ? 'destination-out' : 'source-over';
-
-      ctx.stroke();                // Render the path
     });
 
     ctx.restore(); // Restore the canvas context state (removes the scaling and composite operation)
@@ -120,6 +133,9 @@ const CanvasDrawingApp = () => {
   // Event handler for when drawing starts (mouse down or touch start)
   // Memoized with useCallback to keep it stable for event listener setup
   const startDrawing = useCallback((event) => {
+    // Only start drawing if the selected tool is not 'image' (which is for uploading)
+    if (selectedToolRef.current === 'image') return;
+
     isDrawingRef.current = true; // Set drawing flag to true
     const coordinates = getCoordinates(event); // Get starting coordinates
 
@@ -138,7 +154,7 @@ const CanvasDrawingApp = () => {
   // Event handler for drawing movement (mouse move or touch move)
   // Memoized with useCallback
   const draw = useCallback((event) => {
-    if (!isDrawingRef.current) return; // Only draw if drawing is active
+    if (!isDrawingRef.current || selectedToolRef.current === 'image') return; // Only draw if drawing is active and not in image mode
     const coordinates = getCoordinates(event); // Get current coordinates
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -147,7 +163,7 @@ const CanvasDrawingApp = () => {
     // Update the `paths` state by adding the new point to the last path
     setPaths(prevPaths => {
         const lastPathIndex = prevPaths.length - 1;
-        if (lastPathIndex < 0) return prevPaths; // Should not happen if startDrawing was called
+        if (lastPathIndex < 0 || prevPaths[lastPathIndex].type === 'image') return prevPaths; // Should not happen if startDrawing was called, or if last path is an image
 
         const updatedPaths = [...prevPaths];
         // Create a new array for points to ensure immutability for React state updates
@@ -238,24 +254,75 @@ const CanvasDrawingApp = () => {
     setZoomLevel(prevZoom => Math.max(0.25, prevZoom / 1.1)); // Decrease zoom level by 10%, with a minimum of 25%
   };
 
-  // --- NEW: Custom cursor styles ---
-  // Using custom cursors generated from SVG to display tool icons
+  // Handler for image file selection
+  const handleImageUpload = useCallback((event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          // Calculate dimensions to fit within canvas while maintaining aspect ratio
+          const aspectRatio = img.width / img.height;
+          let drawWidth = img.width;
+          let drawHeight = img.height;
+
+          // Scale down if image is larger than canvas
+          if (drawWidth > canvasWidth || drawHeight > canvasHeight) {
+            if (drawWidth / canvasWidth > drawHeight / canvasHeight) {
+              drawWidth = canvasWidth;
+              drawHeight = canvasWidth / aspectRatio;
+            } else {
+              drawHeight = canvasHeight;
+              drawWidth = canvasHeight * aspectRatio;
+            }
+          }
+
+          // Place at top-left (0,0) of the canvas
+          const x = 0;
+          const y = 0;
+
+          setPaths(prevPaths => [
+            ...prevPaths,
+            {
+              type: 'image', // Custom type to distinguish from drawing paths
+              img: img,
+              x: x,
+              y: y,
+              width: drawWidth,
+              height: drawHeight
+            }
+          ]);
+          // Clear the file input value so the same file can be selected again
+          event.target.value = '';
+          setSelectedTool('default'); // Reset tool after upload, or keep current tool
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }, [canvasWidth, canvasHeight]); // Dependencies for useCallback
+
+  // Determine the cursor style based on the selected tool
   const getCursorStyle = useCallback(() => {
     const defaultIconSize = 24; // Base size for the icons
-    const cursorOffsetX = defaultIconSize / 2; // Half width for center point
-    const cursorOffsetY = defaultIconSize - 4; // Bottom-left or slightly above for pen/brush tip
+    // Adjust hot-spot for the cursor. Roughly center for a typical icon.
+    // X is half width, Y is close to bottom for pen/brush tip
+    const cursorOffsetX = 12;
+    const cursorOffsetY = 20;
 
     switch (selectedTool) {
       case 'pen':
-        // A black pen icon, centered for better precision, with fallback
-        return `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='${defaultIconSize}' height='${defaultIconSize}' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 20h9'/><path d='M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z'/></svg>") ${cursorOffsetX} ${cursorOffsetY}, auto`;
+        // Lucide Pencil icon SVG path
+        return `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='${defaultIconSize}' height='${defaultIconSize}' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z'/></svg>") ${cursorOffsetX} ${cursorOffsetY}, auto`;
       case 'brush':
-        // A black paintbrush icon, centered for better precision, with fallback
-        return `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='${defaultIconSize}' height='${defaultIconSize}' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 20h9'/><path d='M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z'/><path d='M18 13l-1.5-1.5'/></svg>") ${cursorOffsetX} ${cursorOffsetY}, auto`;
+        // Lucide Paintbrush icon SVG path (simplified)
+        return `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='${defaultIconSize}' height='${defaultIconSize}' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M9.06 11.9l8.07-8.07a2.85 2.85 0 1 1 4.03 4.03l-8.07 8.07l-4.01 1.91l1.91-4.01Z'/><path d='M18.9 7.9l-1.62-1.62'/></svg>") ${cursorOffsetX} ${cursorOffsetY}, auto`;
       case 'eraser':
-        // An eraser icon, centered for better precision, with fallback
-        // Using a slightly different SVG to differentiate from pen/brush
-        return `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='${defaultIconSize}' height='${defaultIconSize}' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M19 21l-7-7 7-7 7 7-7 7z'/><path d='M5 12l-2 2L12 21l2-2L5 12z'/></svg>") ${cursorOffsetX} ${cursorOffsetY}, auto`;
+        // Lucide Eraser icon SVG path
+        return `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='${defaultIconSize}' height='${defaultIconSize}' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M2.929 11.212l10.32-10.32a2.828 2.828 0 1 1 4 4L6.929 15.212z'/><path d='M11.905 13.914l-3.328 3.328l-2.072 2.072L5.992 21l3.328-3.328l2.072-2.072z'/></svg>") ${cursorOffsetX} ${cursorOffsetY}, auto`;
+      case 'image':
+        return 'copy'; // A cursor indicating something is about to be copied/placed
       default:
         return 'default'; // Default cursor for other cases
     }
@@ -264,7 +331,6 @@ const CanvasDrawingApp = () => {
   return (
     // Main container for the application, styled with Tailwind CSS for responsiveness and aesthetics
     <div className="flex flex-col items-center p-4 min-h-screen bg-gray-100 font-sans antialiased">
-        <img src={samImage} alt="Sam" width="50" height="50" /> <br /><a TARGET="_BLANK" href="https://www.linkedin.com/in/sampurna/"> Sam Atmaramani </a>
       {/* Application Title */}
       <h1 className="text-4xl font-extrabold text-gray-800 mb-6 drop-shadow-md">
         Sam's React Canvas Drawing App
@@ -338,6 +404,30 @@ const CanvasDrawingApp = () => {
             className="w-12 h-12 rounded-full cursor-pointer border-2 border-gray-300 shadow-inner"
           />
         </div>
+
+        {/* Upload Image Button */}
+        <input
+          type="file"
+          ref={fileInputRef}
+          accept="image/*"
+          onChange={handleImageUpload}
+          className="hidden" // Keep the input hidden
+        />
+        <button
+          onClick={() => {
+            setSelectedTool('image'); // Visually indicate image upload mode
+            fileInputRef.current.click(); // Trigger the hidden file input
+          }}
+          className={`flex items-center justify-center px-4 py-2 rounded-xl font-semibold transition duration-300 ease-in-out transform hover:scale-105
+            ${selectedTool === 'image'
+              ? 'bg-blue-500 text-white shadow-lg ring-4 ring-blue-200' // Highlight for image tool
+              : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+            }`
+          }
+          title="Upload Image"
+        >
+          <ImageIcon className="w-5 h-5 mr-2" /> Upload Image
+        </button>
 
         {/* Enlarge Canvas Button (Zoom In) */}
         <button
