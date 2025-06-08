@@ -130,6 +130,10 @@ const CanvasDrawingApp = () => {
   // Event handler for when drawing starts (mouse down or touch start)
   // Memoized with useCallback to keep it stable for event listener setup
   const startDrawing = useCallback((event) => {
+    // Prevent default touch behaviors like scrolling or zooming which can cause flickering
+    if (event.type === 'touchstart') {
+      event.preventDefault();
+    }
     isDrawingRef.current = true; // Set drawing flag to true
     const coordinates = getCoordinates(event); // Get starting coordinates
 
@@ -152,6 +156,10 @@ const CanvasDrawingApp = () => {
   // Memoized with useCallback
   const draw = useCallback((event) => {
     if (!isDrawingRef.current) return; // Only draw if drawing is active
+    // Prevent default touch behaviors like scrolling or zooming which can cause flickering
+    if (event.type === 'touchmove') {
+      event.preventDefault();
+    }
     const coordinates = getCoordinates(event); // Get current coordinates
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -216,8 +224,8 @@ const CanvasDrawingApp = () => {
     canvas.addEventListener('mouseleave', endDrawing); // Stop drawing if mouse leaves canvas area
 
     // Touch event listeners for mobile devices
-    canvas.addEventListener('touchstart', startDrawing);
-    canvas.addEventListener('touchmove', draw);
+    canvas.addEventListener('touchstart', startDrawing, { passive: false }); // Add { passive: false } for preventDefault
+    canvas.addEventListener('touchmove', draw, { passive: false });     // Add { passive: false } for preventDefault
     canvas.addEventListener('touchend', endDrawing);
     canvas.addEventListener('touchcancel', endDrawing); // Handle interruptions like calls/notifications
 
@@ -278,6 +286,10 @@ const CanvasDrawingApp = () => {
       {/* Inline styles for the component */}
       <style>
         {`
+        body {
+            margin: 0;
+            overflow-x: hidden; /* Prevent horizontal scroll on small screens */
+        }
         .drawing-app-container {
           display: flex;
           flex-direction: column; /* Default to column for small screens */
@@ -296,6 +308,7 @@ const CanvasDrawingApp = () => {
                 align-items: flex-start; /* Align items to the top */
                 justify-content: center; /* Center content horizontally */
                 gap: 2rem; /* Add some space between canvas and controls */
+                padding-top: 1rem; /* Adjust padding for side-by-side layout */
             }
         }
 
@@ -306,6 +319,7 @@ const CanvasDrawingApp = () => {
           margin-bottom: 1.5rem; /* mb-6 */
           text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* drop-shadow-md */
           text-align: center; /* Center title */
+          width: 100%; /* Ensure title takes full width */
         }
 
         @media (min-width: 768px) {
@@ -315,6 +329,7 @@ const CanvasDrawingApp = () => {
                 left: 50%; /* Center horizontally */
                 transform: translateX(-50%); /* Adjust for horizontal centering */
                 margin-bottom: 0; /* Remove bottom margin if positioned absolutely */
+                width: auto; /* Allow title to shrink to content width */
             }
         }
 
