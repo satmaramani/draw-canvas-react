@@ -1,13 +1,12 @@
-import logo from './logo.svg';
 import './App.css';
-import CanvasDrawingApp from "./Canvas";
-// import ColoringBookApp from "./Coloring";
+import Router from "./Router";
+// import ColoringPage from './ColoringTemp';
 
 function App() {
   return (
     <div className="App">
-      <CanvasDrawingApp />
-      {/* <ColoringBookApp /> */}
+      {/* <ColoringPage /> */}
+      <Router />
     </div>
   );
 }

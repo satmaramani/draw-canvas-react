@@ -311,9 +311,9 @@ const ColoringBookApp = () => {
         </h1>
 
         {/* More Pages Button - Placed above the main content area */}
-        <div className="more-pages-button" onClick={() => console.log("More Pages clicked!")}>
+        {/* <div className="more-pages-button" onClick={() => console.log("More Pages clicked!")}>
             More Pages
-        </div>
+        </div> */}
 
 
         {/* Image Container (Canvas equivalent for SVG) */}
