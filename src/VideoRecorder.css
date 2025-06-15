@@ -1,0 +1,87 @@
+.container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background: #f9f9f9;
+    text-align: center;
+}
+
+.preview-box,
+.playback-section {
+    margin-top: 20px;
+    position: relative;
+    display: inline-block;
+}
+
+.preview-video,
+.playback-video {
+    width: 480px;
+    height: 360px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.recording-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: red;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.timer {
+    margin-left: 6px;
+    font-weight: bold;
+}
+
+.controls,
+.playback-controls {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 25px;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.3s ease;
+}
+
+.start-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.stop-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.gray-btn {
+    background-color: #6c757d;
+    color: white;
+}
+
+.restart-btn {
+    background-color: #6610f2;
+    color: white;
+}
+
+.btn:hover {
+    opacity: 0.85;
+}
