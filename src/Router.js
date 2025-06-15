@@ -6,7 +6,7 @@ import VideoRecorder from "./Videorecorder"
 import CanvasDrawingApp from "./Canvas"
 import BoyAndGirlColoring from "./BoyAndGirl"
 import Takephoto from "./TakePhoto"
-
+import UploadMedia from "./UploadMedia"
 // Dummy component for the Home page
 const Home = () => (
   <div className="p-8 bg-white rounded-lg shadow-lg text-center">
@@ -46,6 +46,10 @@ const Router = () => {
 
         case "/Takephoto":
           return <Takephoto />
+
+          case "/UploadMedia":
+            return <UploadMedia />          
+          
     
       default:
         // Handles routes that don't match any defined path (404 Not Found)
@@ -107,6 +111,16 @@ const Router = () => {
                 Capture Photo
               </button>
             </li>
+
+            <li>
+            <button className="nav-button"
+                onClick={() => navigate('/UploadMedia')}
+                
+              >
+                Upload Photo / Video
+              </button>
+            </li>
+            
           </ul>
         </nav>
 

@@ -1,0 +1,132 @@
+.upload-container {
+    padding: 20px;
+    min-height: 100vh;
+    background: #f2f2f2;
+    text-align: center;
+}
+
+.title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.upload-section input {
+    padding: 10px;
+    font-size: 1rem;
+}
+
+.media-section {
+    margin-top: 20px;
+}
+
+.media-preview {
+    max-width: 100%;
+    max-height: 400px;
+    border: 2px solid #444;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+/* Filters */
+.grayscale {
+    filter: grayscale(1);
+}
+
+.sepia {
+    filter: sepia(1);
+}
+
+.invert {
+    filter: invert(1);
+}
+
+.brightness {
+    filter: brightness(1.5);
+}
+
+.controls,
+.filters {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn {
+    padding: 10px 16px;
+    font-size: 0.95rem;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.3s ease;
+}
+
+.blue {
+    background: #007bff;
+}
+
+.blue:hover {
+    background: #0069d9;
+}
+
+.yellow {
+    background: #ffc107;
+    color: black;
+}
+
+.yellow:hover {
+    background: #e0a800;
+}
+
+.red {
+    background: #dc3545;
+}
+
+.red:hover {
+    background: #c82333;
+}
+
+.purple {
+    background: #6f42c1;
+}
+
+.purple:hover {
+    background: #5936a3;
+}
+
+.filter-btn {
+    background: #555;
+}
+
+.filter-btn.active {
+    background: #333;
+    font-weight: bold;
+}
+
+.restart-btn {
+    margin-top: 16px;
+}
+
+.restart-section {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.restart-btn {
+    background: #6f42c1;
+    padding: 14px 24px;
+    font-size: 1rem;
+    border-radius: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.restart-btn:hover {
+    background: #5936a3;
+}
