@@ -5,12 +5,13 @@ import ColoringBookApp from "./Coloring"
 import VideoRecorder from "./Videorecorder"
 import CanvasDrawingApp from "./Canvas"
 import BoyAndGirlColoring from "./BoyAndGirl"
+import Takephoto from "./TakePhoto"
 
 // Dummy component for the Home page
 const Home = () => (
   <div className="p-8 bg-white rounded-lg shadow-lg text-center">
     <h2 className="text-4xl font-bold text-gray-800 mb-4">Welcome Home!</h2>
-    <p className="text-lg text-gray-600">This is the main page of your application.</p>
+    <p className="text-lg text-gray-600">Test home page, This is the main page of your application.</p>
   </div>
 );
 
@@ -42,6 +43,10 @@ const Router = () => {
         return <takephoto />;
       case "/BoyAndGirlColoring":
         return <BoyAndGirlColoring />
+
+        case "/Takephoto":
+          return <Takephoto />
+    
       default:
         // Handles routes that don't match any defined path (404 Not Found)
         return (
@@ -71,12 +76,20 @@ const Router = () => {
             </li>
             <li>
             <button className="nav-button"
+                onClick={() => navigate('/CanvasDrawingApp')}
+                
+              >
+                Canvas / Sketching 
+              </button>
+            </li>
+            {/* <li>
+            <button className="nav-button"
                 onClick={() => navigate('/coloring')}
                 
               >
-                Coloring
+                Coloring Home
               </button>
-            </li>
+            </li> */}
             <li>
             <button className="nav-button" 
                 onClick={() => navigate('/VideoRecorder')}
@@ -85,20 +98,13 @@ const Router = () => {
                 Video Recorder
               </button>
             </li>
+            
             <li>
             <button className="nav-button"
-                onClick={() => navigate('/CanvasDrawingApp')}
+                onClick={() => navigate('/Takephoto')}
                 
               >
-                Canvas
-              </button>
-            </li>
-            <li>
-            <button className="nav-button"
-                onClick={() => navigate('/BoyAndGirlColoring')}
-                
-              >
-                BoyAndGirlColoring
+                Capture Photo
               </button>
             </li>
           </ul>
