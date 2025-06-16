@@ -1,24 +1,33 @@
+/* VideoRecorder.css */
 .container {
+    max-width: 100%;
     padding: 20px;
-    font-family: Arial, sans-serif;
-    background: #f9f9f9;
     text-align: center;
+}
+
+h1 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #333;
 }
 
 .preview-box,
 .playback-section {
     margin-top: 20px;
+    width: 100%;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
     position: relative;
-    display: inline-block;
 }
 
 .preview-video,
 .playback-video {
-    width: 480px;
-    height: 360px;
-    border: 2px solid #ccc;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 2px solid #ccc;
 }
 
 .recording-badge {
@@ -27,61 +36,88 @@
     left: 10px;
     background: red;
     color: white;
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 14px;
     font-weight: bold;
-    display: flex;
-    gap: 5px;
-    align-items: center;
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-size: 0.9rem;
 }
 
 .timer {
     margin-left: 6px;
-    font-weight: bold;
+    font-weight: normal;
 }
 
 .controls,
 .playback-controls {
-    margin-top: 20px;
     display: flex;
-    justify-content: center;
-    gap: 15px;
     flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
 }
 
 .btn {
-    padding: 10px 16px;
+    padding: 8px 14px;
+    font-size: 1rem;
+    background-color: #6366f1;
+    color: white;
     border: none;
-    border-radius: 25px;
-    font-size: 14px;
+    border-radius: 6px;
     cursor: pointer;
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 8px;
-    transition: background 0.3s ease;
-}
-
-.start-btn {
-    background-color: #28a745;
-    color: white;
-}
-
-.stop-btn {
-    background-color: #dc3545;
-    color: white;
-}
-
-.gray-btn {
-    background-color: #6c757d;
-    color: white;
-}
-
-.restart-btn {
-    background-color: #6610f2;
-    color: white;
+    gap: 6px;
+    transition: background-color 0.3s ease;
 }
 
 .btn:hover {
-    opacity: 0.85;
+    background-color: #4f46e5;
+}
+
+.stop-btn {
+    background-color: #ef4444;
+}
+
+.stop-btn:hover {
+    background-color: #dc2626;
+}
+
+.gray-btn {
+    background-color: #6b7280;
+}
+
+.gray-btn:hover {
+    background-color: #4b5563;
+}
+
+.restart-btn {
+    margin-top: 12px;
+    background-color: #10b981;
+}
+
+.restart-btn:hover {
+    background-color: #059669;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+
+    .preview-box,
+    .playback-section {
+        max-width: 100%;
+    }
+
+    .preview-video,
+    .playback-video {
+        max-height: 250px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .btn {
+        font-size: 0.9rem;
+        padding: 6px 12px;
+    }
 }

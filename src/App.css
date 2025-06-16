@@ -1,38 +1,122 @@
-.App {
-  text-align: center;
+/* Base Styles */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to bottom right, #f3e8ff, #e0e7ff);
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* App Wrapper */
+.app-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* Card Container */
+.app-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 960px;
+  overflow: hidden;
+}
+
+/* Navbar Styles */
+.navbar {
+  background: linear-gradient(to right, #7c3aed, #4f46e5);
+  padding: 16px;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navbar ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navbar button {
+  padding: 10px 14px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  background-color: #4f46e5;
   color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.App-link {
-  color: #61dafb;
+.navbar button:hover {
+  background-color: #3730a3;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Main Content Centering */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  min-height: 60vh;
+  padding: 32px;
+}
+
+/* Home Section */
+.home-container {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.home-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 12px;
+}
+
+.home-text {
+  font-size: 18px;
+  color: #4b5563;
+}
+
+/* 404 Page */
+.not-found {
+  padding: 32px;
+  text-align: center;
+  color: #dc2626;
+}
+
+.not-found h2 {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.centered-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.video-wrapper {
+  width: 100%;
+  max-width: 800px;
+  min-height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

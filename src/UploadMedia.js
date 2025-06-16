@@ -44,11 +44,11 @@ const UploadMedia = () => {
 
   return (
     <div className="upload-container">
-      <h1 className="title">🎞️ Upload Media</h1>
+      <h1 className="title">🎞️ Upload Media (Photo Or Video)</h1>
 
       {!mediaURL && (
         <div className="upload-section">
-          <input type="file" accept="image/*,video/*" onChange={handleFileChange} /> (you can upload video or Photo)
+          <input type="file" accept="image/*,video/*" onChange={handleFileChange} />
         </div>
       )}
 

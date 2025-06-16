@@ -569,9 +569,9 @@ const CanvasDrawingApp = () => {
       {/* Main container for the application, styled with standard CSS */}
       <div className="drawing-app-container">
         {/* Application Title */}
-        <h1 className="app-title">
+        {/* <h1 className="app-title">
           Sam's Drawing Canvas
-        </h1>
+        </h1> */}
 
         {/* Canvas Container */}
         <div className="canvas-container">
