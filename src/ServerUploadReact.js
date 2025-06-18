@@ -7,7 +7,22 @@ const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://mosi
 const REACT_APP_FRONTEND_URL = process.env.REACT_APP_FRONTEND_URL || 'https://draw-canvas-react-6zn6.vercel.app';
 
 // const sessionId = 'museum123';
-const sessionId = `session_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+
+function getSessionId() {
+  const params = new URLSearchParams(window.location.search);
+  const sessionFromURL = params.get('session');
+
+  // If session param exists in URL, use it
+  if (sessionFromURL) {
+    return sessionFromURL;
+  }
+
+  // Otherwise, generate new one
+  return `session_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+}
+
+const sessionId = getSessionId();
+console.log("This is session id ", sessionId)
 
 function ServerUploadReact() {
   const [images, setImages] = useState([]);
