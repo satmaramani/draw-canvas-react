@@ -6,7 +6,8 @@ import { QRCodeCanvas } from 'qrcode.react';
 const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://mosida-node-backend-production.up.railway.app';
 const REACT_APP_FRONTEND_URL = process.env.REACT_APP_FRONTEND_URL || 'https://draw-canvas-react-6zn6.vercel.app';
 
-const sessionId = 'museum123';
+// const sessionId = 'museum123';
+const sessionId = `session_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
 
 function ServerUploadReact() {
   const [images, setImages] = useState([]);
