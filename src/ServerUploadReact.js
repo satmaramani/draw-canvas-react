@@ -6,22 +6,31 @@ import { QRCodeCanvas } from 'qrcode.react';
 const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://mosida-node-backend-production.up.railway.app';
 const REACT_APP_FRONTEND_URL = process.env.REACT_APP_FRONTEND_URL || 'https://draw-canvas-react-6zn6.vercel.app';
 
-// Generate or retrieve sessionId
+// const sessionId = 'museum123';
+
 function getSessionId() {
   const params = new URLSearchParams(window.location.search);
   const sessionFromURL = params.get('session');
-  if (sessionFromURL) return sessionFromURL;
+
+  // If session param exists in URL, use it
+  if (sessionFromURL) {
+    return sessionFromURL;
+  }
+
+  // Otherwise, generate new one
   return `session_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
 }
 
 const sessionId = getSessionId();
-const isMobileUpload = window.location.search.includes('session=');
+console.log("This is session id ", sessionId)
 
 function ServerUploadReact() {
   const [images, setImages] = useState([]);
   const [file, setFile] = useState(null);
 
   useEffect(() => {
+    console.log('📡 Connecting to socket at:', REACT_APP_BACKEND_URL);
+
     const socket = io(REACT_APP_BACKEND_URL, {
       transports: ['websocket'],
       reconnectionAttempts: 3,
@@ -36,12 +45,14 @@ function ServerUploadReact() {
     });
 
     socket.on('imageUploaded', ({ sessionId: sid, imageUrl }) => {
+      console.log('📦 Received image from socket:', imageUrl);
       if (sid === sessionId) {
         setImages(prev => [...prev, imageUrl]);
       }
     });
 
     return () => {
+      console.log('👋 Disconnecting socket');
       socket.disconnect();
     };
   }, []);
@@ -58,35 +69,21 @@ function ServerUploadReact() {
 
     try {
       const res = await axios.post(`${REACT_APP_BACKEND_URL}/upload`, formData);
-      alert('✅ Upload successful!');
-      setFile(null);
+      console.log('✅ Image uploaded:', res.data.imageUrl);
     } catch (err) {
       console.error('❌ Upload failed:', err.message || err);
-      alert('❌ Upload failed. Please try again.');
     }
   };
 
-  // 👇 Render based on mobile vs desktop
-  if (isMobileUpload) {
-    // ✅ MOBILE: Only show upload section
-    return (
-      <div style={{ padding: 20 }}>
-        <h2>📤 Upload Image</h2>
-        <input type="file" onChange={e => setFile(e.target.files[0])} />
-        <button onClick={handleUpload}>Upload</button>
-      </div>
-    );
-  }
-
-  // ✅ DESKTOP: Full interface with QR + preview
   return (
     <div style={{ padding: 20 }}>
-      <h1>🖼️ Museum Display Upload</h1>
+      <h1>🖼️ Upload Page / Museum Display</h1>
       <h3>📱 Scan QR to Upload from Mobile</h3>
       <QRCodeCanvas value={`${REACT_APP_FRONTEND_URL}/ServerUploadReact?session=${sessionId}`} size={128} />
+      {/* <QRCodeCanvas value={`${REACT_APP_FRONTEND_URL}/ServerUploadReact`} size={128} /> */}
       
       <h3>🖥️ OR Upload from this page</h3>
-      <input type="file" onChange={e => setFile(e.target.files[0])} />
+      <input type="file" onChange={e => setFile(e.target.files[0])} /><br /><br /><br />
       <button onClick={handleUpload}>Upload</button>
 
       <h3>🧾 Uploaded Images:</h3>
