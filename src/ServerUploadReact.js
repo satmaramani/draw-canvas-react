@@ -63,7 +63,8 @@ function ServerUploadReact() {
     <div style={{ padding: 20 }}>
       <h1>🖼️ Upload Page / Museum Display</h1>
       <h3>📱 Scan QR to Upload from Mobile</h3>
-      <QRCodeCanvas value={`${REACT_APP_FRONTEND_URL}/upload?session=${sessionId}`} size={128} />
+      <QRCodeCanvas value={`${REACT_APP_FRONTEND_URL}/ServerUploadReact?session=${sessionId}`} size={128} />
+      {/* <QRCodeCanvas value={`${REACT_APP_FRONTEND_URL}/ServerUploadReact`} size={128} /> */}
       
       <h3>🖥️ OR Upload from this page</h3>
       <input type="file" onChange={e => setFile(e.target.files[0])} />
