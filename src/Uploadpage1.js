@@ -9,7 +9,7 @@ const UploadPage = () => {
 
       <div className="empty-box-section">
         <img
-          src="https://cdn-icons-png.flaticon.com/512/4086/4086679.png"
+          src="/box image mosida.png"
           alt="Empty box"
           className="empty-box-img"
         />

@@ -9,6 +9,10 @@ import TakePhoto from "./TakePhoto";
 import UploadMedia from "./UploadMedia";
 import UploadPage from "./Uploadpage1";
 import ServerUploadReact from "./ServerUploadReact"
+import ColoringCanvas from './ColoringLatest';
+import UploadStep2 from "./UploadStep2"
+import UploadCombined from "./UploadCombined"
+
 
 const Home = () => (
   <div className="home-container">
@@ -37,6 +41,11 @@ const Router = () => {
       case '/UploadMedia': return <div className="w-full max-w-3xl mx-auto"><UploadMedia /></div>;
       case '/UploadPage': return <div className="w-full max-w-3xl mx-auto"><UploadPage /></div>;
       case '/ServerUploadReact' :  return <ServerUploadReact />;
+      case "/ColoringCanvas" : return <ColoringCanvas />;
+      case "/UploadStep2" : return <UploadStep2 />;
+      case "/UploadCombined" : return <UploadCombined />;
+      
+
       default:
         return (
           <div className="not-found">
@@ -74,6 +83,17 @@ const Router = () => {
     <li>
       <button onClick={() => navigate('/ServerUploadReact')}>Railway Server Upload Images </button>
     </li>
+    <li>
+      <button onClick={() => navigate('/ColoringCanvas')}>ColoringCanvas Latest </button>
+    </li>
+
+    <li>
+      <button onClick={() => navigate('/UploadStep2')}>UploadStep2 </button>
+    </li>
+    <li>
+      <button onClick={() => navigate('/UploadCombined')}>Upload Step Combined </button>
+    </li>
+    
     
   </ul>
 </nav>
