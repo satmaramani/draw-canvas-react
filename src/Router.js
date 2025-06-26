@@ -13,7 +13,7 @@ import ColoringCanvas from './ColoringLatest';
 import UploadStep2 from "./UploadStep2"
 import UploadCombined from "./UploadCombined"
 import ColoringBoyAndGirl from "./ColoringBoyAndGirl"
-
+import TextCanvasEditor from "./TextCanvasEditor"
 
 
 const Home = () => (
@@ -47,6 +47,8 @@ const Router = () => {
       case "/UploadStep2" : return <UploadStep2 />;
       case "/UploadCombined" : return <UploadCombined />;
       case "/ColoringBoyAndGirl" : return <ColoringBoyAndGirl />;
+      case "/TextCanvasEditor" : return <TextCanvasEditor />;
+      
 
       default:
         return (
@@ -99,6 +101,10 @@ const Router = () => {
       <button onClick={() => navigate('/UploadCombined')}>Upload Step Combined </button>
     </li>
     
+    <li>
+      <button onClick={() => navigate('/TextCanvasEditor')}>Text Editor </button>
+    </li>
+
     
   </ul>
 </nav>
