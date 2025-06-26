@@ -86,7 +86,7 @@ const Router = () => {
       <button onClick={() => navigate('/ServerUploadReact')}>Railway Server Upload Images </button>
     </li>
     <li>
-      <button onClick={() => navigate('/ColoringCanvas')}>ColoringCanvas Latest </button>
+      <button onClick={() => navigate('/ColoringCanvas')}>Coloring  Picaso Image </button>
     </li>
     <li>
       <button onClick={() => navigate('/ColoringBoyAndGirl')}>Coloring Boy and Girl </button>
