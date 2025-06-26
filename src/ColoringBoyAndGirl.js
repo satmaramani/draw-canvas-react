@@ -11,11 +11,10 @@ const COLORS = [
   '#F5DEB3', '#DEB887', '#D2B48C', '#BC8F8F', '#A0522D', '#8B4513', '#CD853F'
 ];
 
-const ColoringCanvas = () => {
+const ColoringBoyAndGirl = () => {
   const canvasRef = useRef(null);
   const imageRef = useRef(null);
   const [selectedColor, setSelectedColor] = useState(COLORS[0]);
-  const [tolerance, setTolerance] = useState(0); // dynamic tolerance
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -26,30 +25,8 @@ const ColoringCanvas = () => {
       canvas.width = img.width;
       canvas.height = img.height;
       ctx.drawImage(img, 0, 0);
-
-      const type = analyzeImageType(ctx, img.width, img.height);
-      const decidedTolerance = type === 'complex' ? 32 : 0;
-      setTolerance(decidedTolerance);
-      console.log(`Image type: ${type} → Tolerance: ${decidedTolerance}`);
     };
   }, []);
-
-  const analyzeImageType = (ctx, width, height) => {
-    const imageData = ctx.getImageData(0, 0, width, height);
-    const data = imageData.data;
-    let nonBWCount = 0;
-
-    for (let i = 0; i < data.length; i += 4) {
-      const [r, g, b] = [data[i], data[i + 1], data[i + 2]];
-      const isBW = (r === g && g === b) && (r === 0 || r === 255);
-      if (!isBW) {
-        nonBWCount++;
-        if (nonBWCount > 500) break; // early exit
-      }
-    }
-
-    return nonBWCount > 500 ? 'complex' : 'clean';
-  };
 
   const hexToRgba = (hex) => {
     const bigint = parseInt(hex.slice(1), 16);
@@ -74,25 +51,26 @@ const ColoringCanvas = () => {
     imageData.data[i + 3] = color[3];
   };
 
-  const colorsMatch = (a, b, tol = 0) => {
+  const colorsMatch = (a, b, tolerance = 32) => {
     return (
-      Math.abs(a[0] - b[0]) <= tol &&
-      Math.abs(a[1] - b[1]) <= tol &&
-      Math.abs(a[2] - b[2]) <= tol &&
-      Math.abs(a[3] - b[3]) <= tol
+      Math.abs(a[0] - b[0]) <= tolerance &&
+      Math.abs(a[1] - b[1]) <= tolerance &&
+      Math.abs(a[2] - b[2]) <= tolerance &&
+      Math.abs(a[3] - b[3]) <= tolerance
     );
   };
 
   const floodFill = (ctx, x, y, fillColor) => {
     const imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
     const targetColor = getPixel(imageData, x, y);
-    if (colorsMatch(targetColor, fillColor, tolerance)) return;
+    if (colorsMatch(targetColor, fillColor)) return;
 
     const stack = [[x, y]];
     const visited = new Set();
 
     const width = imageData.width;
     const height = imageData.height;
+
     const getIndex = (x, y) => y * width + x;
 
     while (stack.length > 0) {
@@ -102,7 +80,7 @@ const ColoringCanvas = () => {
       visited.add(index);
 
       const currentColor = getPixel(imageData, cx, cy);
-      if (!colorsMatch(currentColor, targetColor, tolerance)) continue;
+      if (!colorsMatch(currentColor, targetColor)) continue;
 
       setPixel(imageData, cx, cy, fillColor);
 
@@ -151,9 +129,6 @@ const ColoringCanvas = () => {
             />
           ))}
         </div>
-        <div style={{ fontSize: '12px', fontFamily: 'sans-serif' }}>
-          <strong>Tolerance:</strong> {tolerance}
-        </div>
       </div>
 
       {/* Canvas Area */}
@@ -169,7 +144,7 @@ const ColoringCanvas = () => {
         />
         <img
           ref={imageRef}
-          src="/picaso.png" // <-- update with your image path like '/picasso.png'
+          src="/boy_girl_bw.png" // Change this to your Picasso-style PNG image path
           alt="Coloring"
           style={{ display: 'none' }}
           crossOrigin="anonymous"
@@ -179,4 +154,4 @@ const ColoringCanvas = () => {
   );
 };
 
-export default ColoringCanvas;
+export default ColoringBoyAndGirl;

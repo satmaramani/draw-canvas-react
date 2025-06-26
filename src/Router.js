@@ -12,6 +12,8 @@ import ServerUploadReact from "./ServerUploadReact"
 import ColoringCanvas from './ColoringLatest';
 import UploadStep2 from "./UploadStep2"
 import UploadCombined from "./UploadCombined"
+import ColoringBoyAndGirl from "./ColoringBoyAndGirl"
+
 
 
 const Home = () => (
@@ -44,7 +46,7 @@ const Router = () => {
       case "/ColoringCanvas" : return <ColoringCanvas />;
       case "/UploadStep2" : return <UploadStep2 />;
       case "/UploadCombined" : return <UploadCombined />;
-      
+      case "/ColoringBoyAndGirl" : return <ColoringBoyAndGirl />;
 
       default:
         return (
@@ -85,6 +87,9 @@ const Router = () => {
     </li>
     <li>
       <button onClick={() => navigate('/ColoringCanvas')}>ColoringCanvas Latest </button>
+    </li>
+    <li>
+      <button onClick={() => navigate('/ColoringBoyAndGirl')}>Coloring Boy and Girl </button>
     </li>
 
     <li>
