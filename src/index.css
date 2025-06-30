@@ -45,3 +45,10 @@ code {
   outline: none;
   box-shadow: 0 0 0 3px rgba(123, 97, 255, 0.5);
 }
+
+body.mobile-only .menu,
+body.mobile-only header,
+body.mobile-only nav,
+body.mobile-only footer {
+  display: none !important;
+}

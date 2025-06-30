@@ -26,6 +26,15 @@ function ServerUploadReact() {
   const [file, setFile] = useState(null);
   const [uploadDisabled, setUploadDisabled] = useState(false);
 
+  // ✅ Add/remove body class based on QR role
+  useEffect(() => {
+    if (isMobile) {
+      document.body.classList.add('mobile-only');
+    } else {
+      document.body.classList.remove('mobile-only');
+    }
+  }, []);
+
   useEffect(() => {
     const socket = io(REACT_APP_BACKEND_URL, {
       transports: ['websocket'],
@@ -98,7 +107,6 @@ function ServerUploadReact() {
 
     try {
       const compressed = await compressImage(file);
-
       const formData = new FormData();
       formData.append('file', compressed);
       formData.append('sessionId', sessionId);
