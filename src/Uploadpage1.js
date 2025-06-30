@@ -5,7 +5,7 @@ const UploadPage = () => {
   return (
     <div className="upload-container">
       <h1 className="title">MOSIDA</h1>
-      <p className="instruction">Please upload a maximum of 8 images</p>
+      <p className="instruction">Please upload Image</p>
 
       <div className="empty-box-section">
         <img

@@ -81,11 +81,11 @@ const Router = () => {
       <button onClick={() => navigate('/UploadMedia')}>Upload Photo / Video</button>
     </li>
 
-    <li>
+    {/* <li>
       <button onClick={() => navigate('/UploadPage')}>Upload Page</button>
-    </li>
+    </li> */}
     <li>
-      <button onClick={() => navigate('/ServerUploadReact')}>Railway Server Upload Images </button>
+      <button onClick={() => navigate('/ServerUploadReact')}>QR Code Sync Upload Images - backend </button>
     </li>
     <li>
       <button onClick={() => navigate('/ColoringCanvas')}>Coloring  Picaso Image </button>
@@ -94,15 +94,15 @@ const Router = () => {
       <button onClick={() => navigate('/ColoringBoyAndGirl')}>Coloring Boy and Girl </button>
     </li>
 
-    <li>
+    {/* <li>
       <button onClick={() => navigate('/UploadStep2')}>UploadStep2 </button>
-    </li>
+    </li> */}
     <li>
       <button onClick={() => navigate('/UploadCombined')}>Upload Step Combined </button>
     </li>
     
     <li>
-      <button onClick={() => navigate('/TextCanvasEditor')}>Text Editor </button>
+      <button onClick={() => navigate('/TextCanvasEditor')}>Text & Image Editor </button>
     </li>
 
     

@@ -149,7 +149,7 @@ const ColoringBoyAndGirl = () => {
         />
         <img
           ref={imageRef}
-          src="/boy_girl_bw.png" // Change this to your Picasso-style PNG image path
+          src="/picaso.png" // Change this to your Picasso-style PNG image path
           alt="Coloring"
           style={{ display: 'none' }}
           crossOrigin="anonymous"

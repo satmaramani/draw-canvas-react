@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './UploadStep2.css';
 import axios from 'axios';
 
+const allowedImagesCount = 1;
 const UploadCombined = () => {
   const [images, setImages] = useState([]);
   const [uploadedUrls, setUploadedUrls] = useState([]);
@@ -9,7 +10,7 @@ const UploadCombined = () => {
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    const newImages = files.slice(0, 8 - images.length);
+    const newImages = files.slice(0, allowedImagesCount - images.length);
     const previews = newImages.map((file) => ({
       file,
       url: URL.createObjectURL(file),
@@ -48,7 +49,7 @@ const UploadCombined = () => {
   return (
     <div className="upload-container">
       <h1 className="upload-title">MOSIDA</h1>
-      <p className="upload-subtitle">Please upload a maximum of 8 images</p>
+      <p className="upload-subtitle">Please upload Image</p>
 
       {images.length === 0 ? (
         <>
@@ -70,7 +71,7 @@ const UploadCombined = () => {
             {images.map((img, idx) => (
               <img key={idx} src={img.url} alt={`Preview ${idx}`} className="upload-image" />
             ))}
-            {images.length < 8 && (
+            {images.length < allowedImagesCount && (
               <div className="upload-add" onClick={handleAddMoreClick}>
                 <div className="plus-icon">+</div>
                 <div className="add-label">Add more</div>

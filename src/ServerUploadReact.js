@@ -6,31 +6,28 @@ import { QRCodeCanvas } from 'qrcode.react';
 const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://mosida-node-backend-production.up.railway.app';
 const REACT_APP_FRONTEND_URL = process.env.REACT_APP_FRONTEND_URL || 'https://draw-canvas-react-6zn6.vercel.app';
 
-// const sessionId = 'museum123';
-
 function getSessionId() {
   const params = new URLSearchParams(window.location.search);
   const sessionFromURL = params.get('session');
-
-  // If session param exists in URL, use it
-  if (sessionFromURL) {
-    return sessionFromURL;
-  }
-
-  // Otherwise, generate new one
+  if (sessionFromURL) return sessionFromURL;
   return `session_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
 }
 
+function isMobileClient() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('role') === 'mobile';
+}
+
 const sessionId = getSessionId();
-console.log("This is session id ", sessionId)
+const isMobile = isMobileClient();
+console.log("📌 Session ID:", sessionId);
+console.log("📱 Mobile mode:", isMobile);
 
 function ServerUploadReact() {
   const [images, setImages] = useState([]);
   const [file, setFile] = useState(null);
 
   useEffect(() => {
-    console.log('📡 Connecting to socket at:', REACT_APP_BACKEND_URL);
-
     const socket = io(REACT_APP_BACKEND_URL, {
       transports: ['websocket'],
       reconnectionAttempts: 3,
@@ -45,14 +42,12 @@ function ServerUploadReact() {
     });
 
     socket.on('imageUploaded', ({ sessionId: sid, imageUrl }) => {
-      console.log('📦 Received image from socket:', imageUrl);
       if (sid === sessionId) {
         setImages(prev => [...prev, imageUrl]);
       }
     });
 
     return () => {
-      console.log('👋 Disconnecting socket');
       socket.disconnect();
     };
   }, []);
@@ -77,12 +72,18 @@ function ServerUploadReact() {
 
   return (
     <div style={{ padding: 20 }}>
-      <h1>🖼️ Upload Page / Museum Display</h1>
-      <h3>📱 Scan QR to Upload from Mobile</h3>
-      <QRCodeCanvas value={`${REACT_APP_FRONTEND_URL}/ServerUploadReact?session=${sessionId}`} size={128} />
-      {/* <QRCodeCanvas value={`${REACT_APP_FRONTEND_URL}/ServerUploadReact`} size={128} /> */}
-      
-      <h3>🖥️ OR Upload from this page</h3>
+      {!isMobile && (
+        <>
+          <h1>🖼️ Upload Page / Museum Display</h1>
+          <h3>📱 Scan QR to Upload from Mobile</h3>
+          <QRCodeCanvas
+            value={`${REACT_APP_FRONTEND_URL}/ServerUploadReact?session=${sessionId}&role=mobile`}
+            size={128}
+          />
+          <h3>🖥️ OR Upload from this page</h3>
+        </>
+      )}
+
       <input type="file" onChange={e => setFile(e.target.files[0])} /><br /><br /><br />
       <button onClick={handleUpload}>Upload</button>
 

@@ -169,7 +169,7 @@ const ColoringCanvas = () => {
         />
         <img
           ref={imageRef}
-          src="/picaso.png" // <-- update with your image path like '/picasso.png'
+          src="/picaso closed.png" // <-- update with your image path like '/picasso.png'
           alt="Coloring"
           style={{ display: 'none' }}
           crossOrigin="anonymous"
