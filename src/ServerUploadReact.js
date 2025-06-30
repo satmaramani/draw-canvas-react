@@ -20,12 +20,11 @@ function isMobileClient() {
 
 const sessionId = getSessionId();
 const isMobile = isMobileClient();
-console.log("📌 Session ID:", sessionId);
-console.log("📱 Mobile mode:", isMobile);
 
 function ServerUploadReact() {
   const [images, setImages] = useState([]);
   const [file, setFile] = useState(null);
+  const [uploadDisabled, setUploadDisabled] = useState(false);
 
   useEffect(() => {
     const socket = io(REACT_APP_BACKEND_URL, {
@@ -44,6 +43,7 @@ function ServerUploadReact() {
     socket.on('imageUploaded', ({ sessionId: sid, imageUrl }) => {
       if (sid === sessionId) {
         setImages(prev => [...prev, imageUrl]);
+        setUploadDisabled(true); // Disallow more uploads
       }
     });
 
@@ -52,19 +52,59 @@ function ServerUploadReact() {
     };
   }, []);
 
+  // 👇 Compress image before upload
+  async function compressImage(file, maxWidth = 1024, quality = 0.7) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const scale = maxWidth / img.width;
+          canvas.width = maxWidth;
+          canvas.height = img.height * scale;
+
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          canvas.toBlob(
+            (blob) => {
+              const compressed = new File([blob], file.name, {
+                type: 'image/jpeg',
+                lastModified: Date.now(),
+              });
+              resolve(compressed);
+            },
+            'image/jpeg',
+            quality
+          );
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
   const handleUpload = async () => {
     if (!file) {
-      alert('Please select a file before uploading.');
+      alert('Please select an image to upload.');
       return;
     }
 
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('sessionId', sessionId);
+    if (uploadDisabled) {
+      alert('Only one image can be uploaded.');
+      return;
+    }
 
     try {
+      const compressed = await compressImage(file);
+
+      const formData = new FormData();
+      formData.append('file', compressed);
+      formData.append('sessionId', sessionId);
+
       const res = await axios.post(`${REACT_APP_BACKEND_URL}/upload`, formData);
-      console.log('✅ Image uploaded:', res.data.imageUrl);
+      console.log('✅ Compressed image uploaded:', res.data.imageUrl);
     } catch (err) {
       console.error('❌ Upload failed:', err.message || err);
     }
@@ -84,10 +124,18 @@ function ServerUploadReact() {
         </>
       )}
 
-      <input type="file" onChange={e => setFile(e.target.files[0])} /><br /><br /><br />
-      <button onClick={handleUpload}>Upload</button>
+      <input
+        type="file"
+        disabled={uploadDisabled}
+        accept="image/*"
+        onChange={(e) => setFile(e.target.files[0])}
+      />
+      <br /><br />
+      <button onClick={handleUpload} disabled={uploadDisabled}>
+        {uploadDisabled ? 'Upload Complete' : 'Upload'}
+      </button>
 
-      <h3>🧾 Uploaded Images:</h3>
+      <h3>🧾 Uploaded Image:</h3>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 10 }}>
         {images.map((url, idx) => (
           <img key={idx} src={url} alt={`Uploaded-${idx}`} width="200" />
