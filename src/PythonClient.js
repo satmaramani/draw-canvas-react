@@ -19,7 +19,7 @@ function App() {
     formData.append("file", file);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/remove-bg", {
+      const res = await fetch("https://python-bg-remover-production.up.railway.app/remove-bg", {
         method: "POST",
         body: formData,
       });
