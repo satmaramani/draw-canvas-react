@@ -15,6 +15,12 @@ import UploadCombined from "./UploadCombined"
 import ColoringBoyAndGirl from "./ColoringBoyAndGirl"
 import TextCanvasEditor from "./TextCanvasEditor"
 
+import BackgroundRemover from "./BackgroundRemover"
+import ImageFilters from "./ImageFilters";
+
+import ImageUploader from "./ImageUploaderNode"
+import BackgroundRemoverMediapipe from "./BackgroundRemoverMediapipe"
+import PythonClient from "./PythonClient"
 
 const Home = () => (
   <div className="home-container">
@@ -48,8 +54,12 @@ const Router = () => {
       case "/UploadCombined" : return <UploadCombined />;
       case "/ColoringBoyAndGirl" : return <ColoringBoyAndGirl />;
       case "/TextCanvasEditor" : return <TextCanvasEditor />;
+      case "/BackgroundRemover" : return <BackgroundRemover />;
+      case "/ImageFilters" : return <ImageFilters />;
+      case "/ImageUploader" : return <ImageUploader />;
+      case "/BackgroundRemoverMediapipe" : return <BackgroundRemoverMediapipe />;
+      case "/PythonClient" : return <PythonClient />;
       
-
       default:
         return (
           <div className="not-found">
@@ -103,6 +113,25 @@ const Router = () => {
     
     <li>
       <button onClick={() => navigate('/TextCanvasEditor')}>Text & Image Editor </button>
+    </li>
+
+    <li>
+      <button onClick={() => navigate('/BackgroundRemover')}>Frontend BackgroundRemover </button>
+    </li>
+    {/* <li>
+      <button onClick={() => navigate('/ImageFilters')}>6 Image Filters </button>
+    </li> */}
+
+<li>
+      <button onClick={() => navigate('/ImageUploader')}>Node Image Uploader </button>
+    </li>
+
+    <li>
+      <button onClick={() => navigate('/BackgroundRemoverMediapipe')}>MediaPipe BackgroundRemover </button>
+    </li>
+
+    <li>
+      <button onClick={() => navigate('/PythonClient')}>Python Client Bg Remove</button>
     </li>
 
     

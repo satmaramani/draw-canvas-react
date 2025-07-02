@@ -1,0 +1,38 @@
+.main-image {
+    transition: all 0.3s ease;
+}
+
+/* Thumbnail size */
+.filter-thumbnail img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #999;
+    transition: all 0.3s ease;
+}
+
+.filter-thumbnail:hover {
+    transform: scale(1.05);
+}
+
+/* Filter Styles */
+.filter-bw {
+    filter: grayscale(100%);
+}
+
+.filter-vintage {
+    filter: sepia(0.4) contrast(1.2) brightness(0.9);
+}
+
+.filter-bright {
+    filter: brightness(1.3) saturate(1.2);
+}
+
+.filter-cool {
+    filter: hue-rotate(200deg) saturate(1.2);
+}
+
+.filter-soft {
+    filter: brightness(1.1) contrast(0.9) blur(0.5px);
+}
