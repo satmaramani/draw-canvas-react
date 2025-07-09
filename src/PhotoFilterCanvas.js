@@ -1,3 +1,8 @@
+/**
+ * Fully working React component that captures a photo from webcam,
+ * applies CSS-like filters to canvas directly, and downloads the filtered image.
+ */
+
 import React, { useRef, useState, useEffect } from 'react';
 import { FaCamera, FaDownload, FaRedoAlt } from 'react-icons/fa';
 import './PhotoCaptureWithFilters.css';
@@ -10,6 +15,17 @@ const filters = [
   { name: 'Cool', class: 'filter-cool', image: 'cool.png' },
   { name: 'Soft', class: 'filter-soft', image: 'soft.png' },
 ];
+
+const getCanvasFilter = (filterClass) => {
+  switch (filterClass) {
+    case 'filter-bw': return 'grayscale(1)';
+    case 'filter-vintage': return 'sepia(0.6) contrast(1.1)';
+    case 'filter-bright': return 'brightness(1.3)';
+    case 'filter-cool': return 'hue-rotate(190deg) saturate(1.2)';
+    case 'filter-soft': return 'contrast(1.1) saturate(1.2)';
+    default: return 'none';
+  }
+};
 
 const PhotoCaptureWithFilters = () => {
   const videoRef = useRef(null);
@@ -43,24 +59,25 @@ const PhotoCaptureWithFilters = () => {
   const capturePhoto = () => {
     const canvas = canvasRef.current;
     const video = videoRef.current;
+    const ctx = canvas.getContext('2d');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-    const ctx = canvas.getContext('2d');
+    ctx.filter = getCanvasFilter(selectedFilter);
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    setCapturedImage(canvas.toDataURL('image/png'));
+    const dataUrl = canvas.toDataURL('image/png');
+    setCapturedImage(dataUrl);
     stopCamera();
   };
 
   const downloadImage = () => {
+    const canvas = canvasRef.current;
     const link = document.createElement('a');
     link.download = 'captured.png';
-    link.href = capturedImage;
+    link.href = canvas.toDataURL('image/png');
     link.click();
   };
 
-  useEffect(() => {
-    return () => stopCamera();
-  }, []);
+  useEffect(() => () => stopCamera(), []);
 
   return (
     <div className="main-container">
@@ -74,8 +91,9 @@ const PhotoCaptureWithFilters = () => {
             className={`preview ${selectedFilter}`}
           />
         ) : (
-          <img src={capturedImage} alt="Captured" className={`preview ${selectedFilter}`} />
+          <img src={capturedImage} alt="Captured" className={`preview`} />
         )}
+
         <canvas ref={canvasRef} className="hidden-canvas" />
 
         <div className="button-row">
