@@ -1,0 +1,102 @@
+.main-container {
+    display: flex;
+    padding: 20px;
+    font-family: 'Arial';
+}
+
+.left-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.preview {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+/* Filters */
+.filter-bw {
+    filter: grayscale(100%);
+}
+
+.filter-vintage {
+    filter: sepia(60%) contrast(1.1) brightness(0.9);
+}
+
+.filter-bright {
+    filter: brightness(1.5) saturate(1.2);
+}
+
+.filter-cool {
+    filter: contrast(1.1) hue-rotate(180deg);
+}
+
+.filter-soft {
+    filter: brightness(1.1) saturate(1.2) blur(1px);
+}
+
+.right-section {
+    width: 260px;
+    margin-left: 40px;
+}
+
+.highlight {
+    color: #ff80c0;
+}
+
+.filter-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.filter-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    border-radius: 8px;
+    background: #f2f2f2;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.filter-option.active {
+    border: 2px solid #ff80c0;
+    background: #ffeaf5;
+}
+
+.filter-thumb {
+    width: 50px;
+    height: 50px;
+    /*background: url('/sample.jpg') center/cover;*/
+    border-radius: 4px;
+}
+
+/* Hide canvas */
+.hidden-canvas {
+    display: none;
+}
+
+.button-row {
+    display: flex;
+    gap: 12px;
+}
+
+.btn {
+    background: #ff80c0;
+    color: white;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}

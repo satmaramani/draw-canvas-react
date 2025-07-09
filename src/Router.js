@@ -21,6 +21,7 @@ import ImageFilters from "./ImageFilters";
 import ImageUploader from "./ImageUploaderNode"
 import BackgroundRemoverMediapipe from "./BackgroundRemoverMediapipe"
 import PythonClient from "./PythonClient"
+import PhotoFilterCanvas from "./PhotoFilterCanvas";
 
 const Home = () => (
   <div className="home-container">
@@ -59,6 +60,7 @@ const Router = () => {
       case "/ImageUploader" : return <ImageUploader />;
       case "/BackgroundRemoverMediapipe" : return <BackgroundRemoverMediapipe />;
       case "/PythonClient" : return <PythonClient />;
+      case "/PhotoFilterCanvas" : return <PhotoFilterCanvas />;
       
       default:
         return (
@@ -132,6 +134,10 @@ const Router = () => {
 
     <li>
       <button onClick={() => navigate('/PythonClient')}>Python Client Bg Remove</button>
+    </li>
+
+    <li>
+      <button onClick={() => navigate('/PhotoFilterCanvas')}>Photo 6 Filter Canvas</button>
     </li>
 
     
