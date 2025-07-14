@@ -22,6 +22,7 @@ import ImageUploader from "./ImageUploaderNode"
 import BackgroundRemoverMediapipe from "./BackgroundRemoverMediapipe"
 import PythonClient from "./PythonClient"
 import PhotoFilterCanvas from "./PhotoFilterCanvas";
+import SimpleTextChat from "./SimpleTextChat"
 
 const Home = () => (
   <div className="home-container">
@@ -61,7 +62,8 @@ const Router = () => {
       case "/BackgroundRemoverMediapipe" : return <BackgroundRemoverMediapipe />;
       case "/PythonClient" : return <PythonClient />;
       case "/PhotoFilterCanvas" : return <PhotoFilterCanvas />;
-      
+      case "/SimpleTextChat" : return <SimpleTextChat />;
+
       default:
         return (
           <div className="not-found">
@@ -140,6 +142,9 @@ const Router = () => {
       <button onClick={() => navigate('/PhotoFilterCanvas')}>Photo 6 Filter Canvas</button>
     </li>
 
+    <li>
+      <button onClick={() => navigate('/SimpleTextChat')}>SimpleTextChat Confession</button>
+    </li>
     
   </ul>
 </nav>
