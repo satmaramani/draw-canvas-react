@@ -1,0 +1,22 @@
+<svg width="150" height="150" viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="75" cy="75" r="70" fill="#f0f8ff" stroke="#ff69b4" stroke-width="2"/>
+  
+  <!-- Upload arrow -->
+  <path d="M75,40 L75,90 M55,60 L75,40 L95,60" stroke="#ff69b4" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Base line -->
+  <path d="M45,100 L105,100" stroke="#ff69b4" stroke-width="4" fill="none" stroke-linecap="round"/>
+  
+  <!-- Decorative elements -->
+  <circle cx="40" cy="50" r="5" fill="#ff69b4" opacity="0.5"/>
+  <circle cx="110" cy="50" r="5" fill="#ff69b4" opacity="0.5"/>
+  <circle cx="40" cy="100" r="5" fill="#ff69b4" opacity="0.5"/>
+  <circle cx="110" cy="100" r="5" fill="#ff69b4" opacity="0.5"/>
+  
+  <!-- Anime-style sparkles -->
+  <path d="M30,30 L35,35 M25,35 L35,25" stroke="#ff69b4" stroke-width="2" stroke-linecap="round"/>
+  <path d="M120,30 L125,35 M115,35 L125,25" stroke="#ff69b4" stroke-width="2" stroke-linecap="round"/>
+  <path d="M30,120 L35,125 M25,125 L35,115" stroke="#ff69b4" stroke-width="2" stroke-linecap="round"/>
+  <path d="M120,120 L125,125 M115,125 L125,115" stroke="#ff69b4" stroke-width="2" stroke-linecap="round"/>
+</svg>

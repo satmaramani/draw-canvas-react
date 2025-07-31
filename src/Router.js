@@ -23,6 +23,16 @@ import BackgroundRemoverMediapipe from "./BackgroundRemoverMediapipe"
 import PythonClient from "./PythonClient"
 import PhotoFilterCanvas from "./PhotoFilterCanvas";
 import SimpleTextChat from "./SimpleTextChat"
+import FilterGallery from "./EightFilters";
+import GhibliImageConverter from "./GhibliImageConverter";
+import AnimePortraitConverter from "./AnimePortraitConverter";
+import CaricatureConverter from "./CaricatureConverter";
+import WynwoodConverter from "./WynwoodConverter";
+import WarholConverter from "./WarholConverter";
+import MondrianConverter from "./MondrianConverter";
+import LichtensteinConverter from "./LichtensteinConverter";
+import ColorOnWallConverter from "./ColorOnWallConverter";
+import PencilSketchConverter from "./PencilSketchConverter";
 
 const Home = () => (
   <div className="home-container">
@@ -63,6 +73,16 @@ const Router = () => {
       case "/PythonClient" : return <PythonClient />;
       case "/PhotoFilterCanvas" : return <PhotoFilterCanvas />;
       case "/SimpleTextChat" : return <SimpleTextChat />;
+      case '/FilterGallery' : return <FilterGallery />;
+      case '/GhibliImageConverter' : return <GhibliImageConverter />;
+      case '/AnimePortraitConverter' : return <AnimePortraitConverter />;
+      case '/CaricatureConverter' : return <CaricatureConverter />;
+      case '/WynwoodConverter' : return <WynwoodConverter />;
+      case '/WarholConverter' : return <WarholConverter />;
+      case '/MondrianConverter' : return <MondrianConverter />;
+      case '/LichtensteinConverter' : return <LichtensteinConverter />;
+      case '/ColorOnWallConverter' : return <ColorOnWallConverter />;
+      case '/PencilSketchConverter' : return <PencilSketchConverter />;
 
       default:
         return (
@@ -146,6 +166,48 @@ const Router = () => {
       <button onClick={() => navigate('/SimpleTextChat')}>SimpleTextChat Confession</button>
     </li>
     
+    <li>
+      <button onClick={() => navigate('/FilterGallery')}>8 FilterGallery </button>
+    </li>
+    
+    <li>
+      <button onClick={() => navigate('/GhibliImageConverter')}>Ghibli Style Converter</button>
+    </li>
+    
+    <li>
+      <button onClick={() => navigate('/AnimePortraitConverter')}>Anime Portrait Converter</button>
+    </li>
+    
+    <li>
+      <button onClick={() => navigate('/CaricatureConverter')}>Caricature Converter</button>
+    </li>
+    
+    <li>
+      <button onClick={() => navigate('/WynwoodConverter')}>Wynwood Cartoon Converter</button>
+    </li>
+    
+    <li>
+      <button onClick={() => navigate('/WarholConverter')}>Warhol Art Converter</button>
+    </li>
+    
+    <li>
+      <button onClick={() => navigate('/MondrianConverter')}>Mondrian Art Converter</button>
+    </li>
+    
+    <li>
+      <button onClick={() => navigate('/LichtensteinConverter')}>Lichtenstein Pop Art</button>
+    </li>
+    
+    <li>
+      <button onClick={() => navigate('/ColorOnWallConverter')}>Color on Wall Converter</button>
+    </li>
+    
+    <li>
+      <button onClick={() => navigate('/PencilSketchConverter')}>Pencil Sketch Converter</button>
+    </li>
+
+    
+
   </ul>
 </nav>
 

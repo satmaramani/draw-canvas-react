@@ -1,0 +1,44 @@
+<svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="500" height="500" fill="#f0f8ff"/>
+  
+  <!-- Face -->
+  <ellipse cx="250" cy="250" rx="150" ry="180" fill="#ffe6e6"/>
+  
+  <!-- Hair -->
+  <path d="M250,100 C150,100 100,200 100,300 L100,100 C100,50 200,50 250,70 C300,50 400,50 400,100 L400,300 C400,200 350,100 250,100 Z" fill="#663300"/>
+  
+  <!-- Eyes -->
+  <ellipse cx="200" cy="220" rx="25" ry="35" fill="white" stroke="#333" stroke-width="2"/>
+  <ellipse cx="300" cy="220" rx="25" ry="35" fill="white" stroke="#333" stroke-width="2"/>
+  
+  <!-- Pupils -->
+  <circle cx="200" cy="215" r="12" fill="#6699ff"/>
+  <circle cx="300" cy="215" r="12" fill="#6699ff"/>
+  
+  <!-- Highlights -->
+  <circle cx="195" cy="210" r="5" fill="white"/>
+  <circle cx="295" cy="210" r="5" fill="white"/>
+  
+  <!-- Nose -->
+  <path d="M250,250 L245,270 L255,270 Z" fill="#ffcccc"/>
+  
+  <!-- Mouth -->
+  <path d="M220,300 C235,320 265,320 280,300" stroke="#ff6666" stroke-width="3" fill="none"/>
+  
+  <!-- Blush -->
+  <circle cx="180" cy="280" r="15" fill="#ffcccc" opacity="0.5"/>
+  <circle cx="320" cy="280" r="15" fill="#ffcccc" opacity="0.5"/>
+  
+  <!-- Neck -->
+  <path d="M220,380 L220,420 L280,420 L280,380" fill="#ffe6e6"/>
+  
+  <!-- Clothing -->
+  <path d="M150,420 L350,420 L370,500 L130,500 Z" fill="#6699ff"/>
+  <path d="M220,420 L280,420 L270,450 L230,450 Z" fill="white"/>
+  
+  <!-- Accessories -->
+  <circle cx="250" cy="150" r="10" fill="#ff6666"/>
+  <path d="M240,150 L200,130 L190,90" stroke="#ff6666" stroke-width="3" fill="none"/>
+  <path d="M260,150 L300,130 L310,90" stroke="#ff6666" stroke-width="3" fill="none"/>
+</svg>
