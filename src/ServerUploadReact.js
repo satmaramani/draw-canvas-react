@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 import axios from 'axios';
 import { QRCodeCanvas } from 'qrcode.react';
 
-const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://mosida-node-backend-production.up.railway.app';
+const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://dev-lightsail-sam.mosida.com/';
 const REACT_APP_FRONTEND_URL = process.env.REACT_APP_FRONTEND_URL || 'https://draw-canvas-react-6zn6.vercel.app';
 
 function getSessionId() {
