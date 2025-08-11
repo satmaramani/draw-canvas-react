@@ -10,7 +10,7 @@ const AnimePortraitConverter = () => {
   const [error, setError] = useState('');
 
   // API endpoint - update this to your actual backend URL
-  const API_URL = process.env.REACT_APP_BACKEND_URL || 'https://mosida-node-backend-production.up.railway.app' || 'http://localhost:8000';
+  const API_URL = process.env.REACT_APP_BACKEND_URL || 'https://dev-lightsail-sam.mosida.com/' || 'http://localhost:8000';
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];

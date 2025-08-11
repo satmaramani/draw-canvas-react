@@ -33,6 +33,7 @@ import MondrianConverter from "./MondrianConverter";
 import LichtensteinConverter from "./LichtensteinConverter";
 import ColorOnWallConverter from "./ColorOnWallConverter";
 import PencilSketchConverter from "./PencilSketchConverter";
+import ReplicateImageGenerator from "./ReplicateImageGenerator";
 
 const Home = () => (
   <div className="home-container">
@@ -83,6 +84,7 @@ const Router = () => {
       case '/LichtensteinConverter' : return <LichtensteinConverter />;
       case '/ColorOnWallConverter' : return <ColorOnWallConverter />;
       case '/PencilSketchConverter' : return <PencilSketchConverter />;
+      case '/ReplicateImageGenerator' : return <ReplicateImageGenerator />;
 
       default:
         return (
@@ -204,6 +206,10 @@ const Router = () => {
     
     <li>
       <button onClick={() => navigate('/PencilSketchConverter')}>Pencil Sketch Converter</button>
+    </li>
+    
+    <li>
+      <button onClick={() => navigate('/ReplicateImageGenerator')}>AI Image Generator</button>
     </li>
 
     

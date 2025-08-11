@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  draw-canvas-react:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: draw-canvas-react
+    ports:
+      - "3000:80"
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL:-https://mosida-node-backend-production.up.railway.app}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - draw-canvas-network
+
+  # Optional: Add a reverse proxy with SSL termination
+  nginx-proxy:
+    image: nginx:alpine
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx-proxy.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - draw-canvas-react
+    restart: unless-stopped
+    networks:
+      - draw-canvas-network
+
+networks:
+  draw-canvas-network:
+    driver: bridge 
