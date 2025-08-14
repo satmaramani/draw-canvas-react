@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import './ImageRotator.css';
 
 const ImageRotator = () => {
@@ -11,6 +11,8 @@ const ImageRotator = () => {
   
   const imageRef = useRef(null);
   const containerRef = useRef(null);
+  const lastX = useRef(0);
+  const animationFrameId = useRef(null);
 
   // Sample images for demonstration
   const sampleImages = [
@@ -34,46 +36,65 @@ const ImageRotator = () => {
     setRotation(0);
   };
 
-  const handleMouseDown = (e) => {
-    if (!selectedImage) return;
+  // Smooth rotation function using requestAnimationFrame
+  const smoothRotate = useCallback((targetRotation) => {
+    if (animationFrameId.current) {
+      cancelAnimationFrame(animationFrameId.current);
+    }
     
-    setIsDragging(true);
-    setStartX(e.clientX || e.touches?.[0]?.clientX || 0);
-    setStartRotation(rotation);
-  };
+    animationFrameId.current = requestAnimationFrame(() => {
+      setRotation(targetRotation);
+    });
+  }, []);
 
-  const handleMouseMove = (e) => {
+  // Use useCallback to prevent unnecessary re-renders
+  const handleMouseMove = useCallback((e) => {
     if (!isDragging || !selectedImage) return;
     
     const currentX = e.clientX || e.touches?.[0]?.clientX || 0;
     const deltaX = currentX - startX;
     
-    // Convert horizontal movement to rotation
-    // Adjust sensitivity by changing the divisor
-    const rotationDelta = (deltaX / 2);
+    // Convert horizontal movement to rotation with better sensitivity
+    // Reduced divisor for smoother rotation and continuous movement
+    const rotationDelta = (deltaX / 1.2);
     const newRotation = startRotation + rotationDelta;
     
-    setRotation(newRotation);
-  };
+    // Use smooth rotation for better performance
+    smoothRotate(newRotation);
+    lastX.current = currentX;
+  }, [isDragging, selectedImage, startX, startRotation, smoothRotate]);
 
-  const handleMouseUp = () => {
+  const handleMouseUp = useCallback(() => {
     setIsDragging(false);
-  };
+    if (animationFrameId.current) {
+      cancelAnimationFrame(animationFrameId.current);
+    }
+  }, []);
 
-  const handleTouchStart = (e) => {
+  const handleMouseDown = useCallback((e) => {
+    if (!selectedImage) return;
+    
+    const currentX = e.clientX || e.touches?.[0]?.clientX || 0;
+    setIsDragging(true);
+    setStartX(currentX);
+    setStartRotation(rotation);
+    lastX.current = currentX;
+  }, [selectedImage, rotation]);
+
+  const handleTouchStart = useCallback((e) => {
     e.preventDefault();
     handleMouseDown(e);
-  };
+  }, [handleMouseDown]);
 
-  const handleTouchMove = (e) => {
+  const handleTouchMove = useCallback((e) => {
     e.preventDefault();
     handleMouseMove(e);
-  };
+  }, [handleMouseMove]);
 
-  const handleTouchEnd = (e) => {
+  const handleTouchEnd = useCallback((e) => {
     e.preventDefault();
     handleMouseUp();
-  };
+  }, [handleMouseUp]);
 
   // Add event listeners for mouse and touch
   useEffect(() => {
@@ -88,9 +109,12 @@ const ImageRotator = () => {
         document.removeEventListener('mouseup', handleMouseUp);
         document.removeEventListener('touchmove', handleTouchMove);
         document.removeEventListener('touchend', handleTouchEnd);
+        if (animationFrameId.current) {
+          cancelAnimationFrame(animationFrameId.current);
+        }
       };
     }
-  }, [selectedImage, isDragging, startX, startRotation, rotation]);
+  }, [selectedImage, handleMouseMove, handleMouseUp, handleTouchMove, handleTouchEnd]);
 
   const resetRotation = () => {
     setRotation(0);
@@ -153,7 +177,7 @@ const ImageRotator = () => {
                 className="rotating-image"
                 style={{
                   transform: `rotate(${rotation}deg)`,
-                  transition: isDragging ? 'none' : 'transform 0.1s ease'
+                  transition: isDragging ? 'none' : 'transform 0.05s ease-out'
                 }}
               />
             </div>
@@ -174,7 +198,7 @@ const ImageRotator = () => {
               <div className="rotation-info">
                 <p>Current Rotation: {Math.round(rotation)}°</p>
                 <p className="gesture-hint">
-                  💡 Drag left/right or use touch gestures to rotate
+                  💡 Drag left/right or use touch gestures to rotate smoothly
                 </p>
               </div>
             </div>
@@ -193,10 +217,11 @@ const ImageRotator = () => {
       <div className="instructions">
         <h3>How to Use:</h3>
         <ul>
-          <li><strong>Desktop:</strong> Hover over images, click to select, then drag left/right to rotate</li>
-          <li><strong>Mobile:</strong> Tap an image to select, then swipe left/right to rotate</li>
+          <li><strong>Desktop:</strong> Hover over images, click to select, then drag left/right to rotate smoothly</li>
+          <li><strong>Mobile:</strong> Tap an image to select, then swipe left/right to rotate smoothly</li>
           <li><strong>Touch Gestures:</strong> Swipe right to rotate clockwise, swipe left to rotate counter-clockwise</li>
           <li><strong>Precise Control:</strong> Use the control buttons for exact 90° rotations</li>
+          <li><strong>Smooth Rotation:</strong> Continuous rotation follows your finger/mouse movement</li>
         </ul>
       </div>
     </div>
