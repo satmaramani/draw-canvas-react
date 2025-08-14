@@ -125,6 +125,11 @@
   -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  transform-origin: center center;
+  -webkit-transform-origin: center center;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 /* Rotation Controls */
@@ -142,6 +147,11 @@
   gap: 15px;
   flex-wrap: wrap;
   justify-content: center;
+  margin-bottom: 15px;
+}
+
+.control-buttons:last-of-type {
+  margin-bottom: 0;
 }
 
 .control-btn {
@@ -269,10 +279,12 @@
   .control-buttons {
     flex-direction: column;
     align-items: center;
+    gap: 10px;
   }
   
   .control-btn {
     width: 200px;
+    margin-bottom: 5px;
   }
   
   .rotation-workspace {
