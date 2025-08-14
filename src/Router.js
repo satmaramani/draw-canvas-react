@@ -34,6 +34,8 @@ import LichtensteinConverter from "./LichtensteinConverter";
 import ColorOnWallConverter from "./ColorOnWallConverter";
 import PencilSketchConverter from "./PencilSketchConverter";
 import ReplicateImageGenerator from "./ReplicateImageGenerator";
+import AIImageGenerator from "./AIImageGenerator";
+import ImageRotator from "./ImageRotator";
 
 const Home = () => (
   <div className="home-container">
@@ -85,6 +87,8 @@ const Router = () => {
       case '/ColorOnWallConverter' : return <ColorOnWallConverter />;
       case '/PencilSketchConverter' : return <PencilSketchConverter />;
       case '/ReplicateImageGenerator' : return <ReplicateImageGenerator />;
+      case '/AIImageGenerator' : return <AIImageGenerator />;
+      case '/ImageRotator' : return <ImageRotator />;
 
       default:
         return (
@@ -211,8 +215,14 @@ const Router = () => {
     <li>
       <button onClick={() => navigate('/ReplicateImageGenerator')}>AI Image Generator</button>
     </li>
-
     
+    <li>
+      <button onClick={() => navigate('/AIImageGenerator')}>Paid Image Tool</button>
+    </li>
+
+    <li>
+      <button onClick={() => navigate('/ImageRotator')}>Image Rotator with Gestures</button>
+    </li>
 
   </ul>
 </nav>
