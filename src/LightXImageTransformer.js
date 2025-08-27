@@ -54,8 +54,8 @@ export default function LightXImageTransformer() {
       formData.append('text_prompt', textPrompt);
       formData.append('strength', strength);
 
-      // Using your backend on port 8000
-      const response = await fetch('http://localhost:8000/edit/lightx-submit', {
+             // Using existing backend URL
+       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000'}/edit/lightx-submit`, {
         method: 'POST',
         body: formData,
       });
@@ -66,10 +66,10 @@ export default function LightXImageTransformer() {
         setOrderId(data.orderId);
         setStatusMessage(`Job submitted! Order ID: ${data.orderId}`);
         
-        // Update debug info
-        setDebugInfo({
-          orderId: data.orderId,
-          statusCheckUrl: data.statusCheckUrl || `http://localhost:8000/edit/lightx-status?order_id=${data.orderId}`,
+                 // Update debug info
+         setDebugInfo({
+           orderId: data.orderId,
+           statusCheckUrl: data.statusCheckUrl || `${process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000'}/edit/lightx-status?order_id=${data.orderId}`,
           submittedAt: new Date().toLocaleTimeString(),
           prompt: textPrompt,
           strength: strength
@@ -93,7 +93,7 @@ export default function LightXImageTransformer() {
 
     const checkStatus = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/edit/lightx-status?order_id=${id}`);
+                 const response = await fetch(`${process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000'}/edit/lightx-status?order_id=${id}`);
         const data = await response.json();
         
         // Update debug info with current status
