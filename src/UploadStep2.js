@@ -17,7 +17,7 @@ const UploadStep2 = () => {
 
   return (
     <div className="upload-container">
-      <h2 className="upload-title">MOSIDA</h2>
+      <h2 className="upload-title">TechySam</h2>
       <p className="upload-subtitle">Please upload a maximum of 8 images</p>
 
       <div className="upload-grid">

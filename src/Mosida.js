@@ -34,7 +34,7 @@ export default function MosidaColoringTool() {
 
  return (
  <div className="flex flex-col items-center gap-4 p-4">
- <h2 className="text-xl font-bold">MOSIDA Online Coloring Tool</h2>
+ <h2 className="text-xl font-bold">TechySam Online Coloring Tool</h2>
  <SketchPicker color={color} onChangeComplete={(c) => setColor(c.hex)} />
  <canvas id="mosida-canvas" className="border border-gray-300 rounded"></canvas>
  <button onClick={clearCanvas} className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">

@@ -4,7 +4,7 @@ import './Uploadpage1.css';
 const UploadPage = () => {
   return (
     <div className="upload-container">
-      <h1 className="title">MOSIDA</h1>
+      <h1 className="title">TechySam</h1>
       <p className="instruction">Please upload Image</p>
 
       <div className="empty-box-section">

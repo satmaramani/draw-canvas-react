@@ -48,7 +48,7 @@ const UploadCombined = () => {
 
   return (
     <div className="upload-container">
-      <h1 className="upload-title">MOSIDA</h1>
+      <h1 className="upload-title">TechySam</h1>
       <p className="upload-subtitle">Please upload Image</p>
 
       {images.length === 0 ? (

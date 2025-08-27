@@ -12,7 +12,10 @@ const FILTERS = [
   { name: 'Mondrian AI Art', endpoint: 'mondrianart' },
 ];
 
-const API_BASE = 'http://localhost:8000/filter'; // Change if deployed
+// const API_BASE = 'https://dev-lightsail-sam.mosida.com/filter'; // Change if deployed
+const API_BASE = process.env.REACT_APP_BACKEND_URL_FILTER || 
+                'https://dev-lightsail-sam.mosida.com/filter' || 
+                'http://localhost:8000/filter';
 
 const FilterGallery = () => {
   const [selectedFile, setSelectedFile] = useState(null);

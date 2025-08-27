@@ -36,6 +36,7 @@ import PencilSketchConverter from "./PencilSketchConverter";
 import ReplicateImageGenerator from "./ReplicateImageGenerator";
 import AIImageGenerator from "./AIImageGenerator";
 import ImageRotator from "./ImageRotator";
+import LightXImageTransformer from "./LightXImageTransformer";
 
 const Home = () => (
   <div className="home-container">
@@ -89,6 +90,7 @@ const Router = () => {
       case '/ReplicateImageGenerator' : return <ReplicateImageGenerator />;
       case '/AIImageGenerator' : return <AIImageGenerator />;
       case '/ImageRotator' : return <ImageRotator />;
+      case '/LightXImageTransformer' : return <LightXImageTransformer />;
 
       default:
         return (
@@ -222,6 +224,10 @@ const Router = () => {
 
     <li>
       <button onClick={() => navigate('/ImageRotator')}>Image Rotator with Gestures</button>
+    </li>
+
+    <li>
+      <button onClick={() => navigate('/LightXImageTransformer')}>LightX AI Image Transformer</button>
     </li>
 
   </ul>
