@@ -1,0 +1,173 @@
+.enhanced-canvas-editor {
+  padding: 20px;
+  background: #f8f9fa;
+  min-height: 100vh;
+}
+
+.enhanced-canvas-editor .controls {
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.enhanced-canvas-editor button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #007bff;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.enhanced-canvas-editor button:hover {
+  background: #0056b3;
+}
+
+.enhanced-canvas-editor .zoom-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+}
+
+.enhanced-canvas-editor .zoom-control label {
+  font-size: 14px;
+  color: #495057;
+  font-weight: 500;
+}
+
+.enhanced-canvas-editor .zoom-control input[type="range"] {
+  width: 100px;
+}
+
+.canvas-container {
+  position: relative;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  /* Mobile touch optimizations */
+  touch-action: none; /* Prevent default touch behaviors like scrolling */
+  -webkit-touch-callout: none; /* Prevent callout on iOS */
+  -webkit-user-select: none; /* Prevent text selection on iOS */
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.canvas-container canvas {
+  border: 1px solid #dee2e6;
+  width: 100%;
+  display: block;
+}
+
+.icon-toolbar {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid #dee2e6;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.icon-toolbar svg {
+  transition: transform 0.2s;
+}
+
+.icon-toolbar svg:hover {
+  transform: scale(1.1);
+}
+
+.resize-handle {
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.resize-handle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.rotation-handle {
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.rotation-handle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile touch optimizations */
+@media (max-width: 768px) {
+  .enhanced-canvas-editor {
+    padding: 10px;
+  }
+  
+  .enhanced-canvas-editor .controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .enhanced-canvas-editor button {
+    padding: 12px 16px; /* Larger touch targets */
+    font-size: 16px;
+  }
+  
+  .resize-handle {
+    width: 24px !important; /* Larger touch targets */
+    height: 24px !important;
+  }
+  
+  .rotation-handle {
+    width: 40px !important; /* Larger touch targets */
+    height: 40px !important;
+  }
+  
+  .icon-toolbar {
+    padding: 8px 12px !important; /* Larger touch targets */
+    gap: 8px !important;
+  }
+  
+  .icon-toolbar svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+}
+
+.image-border {
+  border: 2px solid #007bff !important;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.edit-form {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid #dee2e6;
+}
+
+.edit-form input {
+  padding: 8px 12px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-size: 14px;
+  width: 200px;
+}
+
+.edit-form button {
+  margin-left: 10px;
+  padding: 8px 16px;
+}

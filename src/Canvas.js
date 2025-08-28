@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { Pencil, Paintbrush, Eraser, Undo2, Redo2, Trash2 } from 'lucide-react'; // Importing required icons
+import { Pencil, Paintbrush, Eraser, Undo2, Redo2, Trash2, RotateCw, Move, ZoomIn, Image as ImageIcon } from 'lucide-react'; // Added new icons
 
 const CanvasDrawingApp = () => {
   // useRef for the canvas element to directly access its DOM properties
@@ -8,7 +8,7 @@ const CanvasDrawingApp = () => {
   // useRefs for mutable states that are frequently accessed by event handlers
   // This helps prevent stale closures in event listeners which are set up once
   const isDrawingRef = useRef(false); // Tracks if the mouse/touch is currently down and drawing
-  const selectedToolRef = useRef('pen'); // Stores the currently active tool ('pen', 'brush', or 'eraser')
+  const selectedToolRef = useRef('pen'); // Stores the currently active tool ('pen', 'brush', 'eraser', 'move', 'rotate', 'zoom')
   const brushSizeRef = useRef(5); // Stores the current brush size for the 'brush' and 'eraser' tools
   const drawingColorRef = useRef('#000000'); // Stores the current drawing color
 
@@ -19,6 +19,14 @@ const CanvasDrawingApp = () => {
   const [drawingColor, setDrawingColor] = useState('#000000');
   const [canvasWidth] = useState(800); // Fixed canvas width for the drawing area
   const [canvasHeight] = useState(600); // Fixed canvas height for the drawing area
+
+  // New state for image functionality
+  const [uploadedImage, setUploadedImage] = useState(null);
+  const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
+  const [imageRotation, setImageRotation] = useState(0);
+  const [imageScale, setImageScale] = useState(1);
+  const [isDraggingImage, setIsDraggingImage] = useState(false);
+  const [lastMousePos, setLastMousePos] = useState({ x: 0, y: 0 });
 
   // State to store all drawn paths. Each path is an object containing tool, size, color, and points.
   // This allows redrawing the canvas content when its size changes or when cleared/restored.
@@ -40,7 +48,6 @@ const CanvasDrawingApp = () => {
   // Predefined brush sizes
   const brushSizes = [2, 5, 10, 15, 20, 25, 30];
 
-
   // Effect to keep refs synchronized with their corresponding state values
   // This ensures event handlers (which use refs) always have the latest tool, size, and color
   useEffect(() => {
@@ -48,6 +55,28 @@ const CanvasDrawingApp = () => {
     brushSizeRef.current = brushSize;
     drawingColorRef.current = drawingColor;
   }, [selectedTool, brushSize, drawingColor]);
+
+  // Handle image upload
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          // Center the image on the canvas
+          const centerX = (canvasWidth - img.width) / 2;
+          const centerY = (canvasHeight - img.height) / 2;
+          setImagePosition({ x: centerX, y: centerY });
+          setUploadedImage(img);
+          setImageRotation(0);
+          setImageScale(1);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   // useCallback memoizes the redrawCanvas function. It will only be re-created if `paths` changes.
   // This function iterates through all stored paths and redraws them on the canvas.
@@ -58,6 +87,29 @@ const CanvasDrawingApp = () => {
 
     // Clear the entire canvas before redrawing all paths
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw uploaded image first (if exists)
+    if (uploadedImage) {
+      ctx.save();
+      
+      // Move to image center for rotation
+      const centerX = imagePosition.x + (uploadedImage.width * imageScale) / 2;
+      const centerY = imagePosition.y + (uploadedImage.height * imageScale) / 2;
+      
+      // Apply transformations from center
+      ctx.translate(centerX, centerY);
+      ctx.rotate(imageRotation * Math.PI / 180);
+      ctx.scale(imageScale, imageScale);
+      
+      // Draw image from its center
+      ctx.drawImage(
+        uploadedImage, 
+        -uploadedImage.width / 2, 
+        -uploadedImage.height / 2
+      );
+      
+      ctx.restore();
+    }
 
     ctx.save(); // Save the current state of the canvas context
 
@@ -91,7 +143,7 @@ const CanvasDrawingApp = () => {
     });
 
     ctx.restore(); // Restore the canvas context state (removes the composite operation)
-  }, [paths]); // `paths` is a dependency because `redrawCanvas` reads from it
+  }, [paths, uploadedImage, imagePosition, imageRotation, imageScale]); // Added image dependencies
 
   // Effect hook to re-render the canvas content whenever `canvasWidth`, `canvasHeight` change
   // or when `paths` are updated (handled by `redrawCanvas`'s dependencies).
@@ -134,8 +186,29 @@ const CanvasDrawingApp = () => {
     if (event.type === 'touchstart') {
       event.preventDefault();
     }
+    
+    const coordinates = getCoordinates(event);
+    
+    // Handle different tools
+    if (selectedToolRef.current === 'move' && uploadedImage) {
+      // Move mode: start dragging image
+      setIsDraggingImage(true);
+      setLastMousePos(coordinates);
+      return;
+    } else if (selectedToolRef.current === 'rotate' && uploadedImage) {
+      // Rotate mode: start rotation (no movement)
+      setIsDraggingImage(true);
+      setLastMousePos(coordinates);
+      return;
+    } else if (selectedToolRef.current === 'zoom' && uploadedImage) {
+      // Zoom mode: start scaling (no movement)
+      setIsDraggingImage(true);
+      setLastMousePos(coordinates);
+      return;
+    }
+    
+    // Drawing tools (pen, brush, eraser)
     isDrawingRef.current = true; // Set drawing flag to true
-    const coordinates = getCoordinates(event); // Get starting coordinates
 
     // Clear the undo stack when a new drawing action begins
     setUndoStack([]);
@@ -150,17 +223,55 @@ const CanvasDrawingApp = () => {
         points: [coordinates]          // Start with the initial point
       }
     ]);
-  }, [getCoordinates]); // `getCoordinates` is a dependency
+  }, [getCoordinates, uploadedImage]); // Added uploadedImage dependency
 
   // Event handler for drawing movement (mouse move or touch move)
   // Memoized with useCallback
   const draw = useCallback((event) => {
+    const coordinates = getCoordinates(event);
+    
+    // Handle different tools
+    if (selectedToolRef.current === 'move' && uploadedImage && isDraggingImage) {
+      // Move mode: drag image around
+      const deltaX = coordinates.x - lastMousePos.x;
+      const deltaY = coordinates.y - lastMousePos.y;
+      
+      setImagePosition(prev => ({
+        x: prev.x + deltaX,
+        y: prev.y + deltaY
+      }));
+      
+      setLastMousePos(coordinates);
+      return;
+    } else if (selectedToolRef.current === 'rotate' && uploadedImage && isDraggingImage) {
+      // Rotate mode: rotate image in place (no movement)
+      const deltaX = coordinates.x - lastMousePos.x;
+      const rotationSpeed = 0.5; // Adjust sensitivity
+      
+      setImageRotation(prev => prev + deltaX * rotationSpeed);
+      setLastMousePos(coordinates);
+      return;
+    } else if (selectedToolRef.current === 'zoom' && uploadedImage && isDraggingImage) {
+      // Zoom mode: scale image in place (no movement)
+      const deltaY = coordinates.y - lastMousePos.y;
+      const zoomSpeed = 0.01; // Adjust sensitivity
+      
+      setImageScale(prev => {
+        const newScale = prev - deltaY * zoomSpeed;
+        return Math.max(0.1, Math.min(5, newScale)); // Limit scale between 0.1x and 5x
+      });
+      
+      setLastMousePos(coordinates);
+      return;
+    }
+    
+    // Drawing tools (pen, brush, eraser)
     if (!isDrawingRef.current) return; // Only draw if drawing is active
     // Prevent default touch behaviors like scrolling or zooming which can cause flickering
     if (event.type === 'touchmove') {
       event.preventDefault();
     }
-    const coordinates = getCoordinates(event); // Get current coordinates
+    
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -201,12 +312,14 @@ const CanvasDrawingApp = () => {
       }
       return updatedPaths; // Return the updated paths array
     });
-  }, [getCoordinates]);
+  }, [getCoordinates, uploadedImage, isDraggingImage, lastMousePos]); // Added new dependencies
 
   // Event handler for when drawing ends (mouse up, touch end, mouse leave, touch cancel)
   // Memoized with useCallback
   const endDrawing = useCallback(() => {
     isDrawingRef.current = false; // Set drawing flag to false
+    setIsDraggingImage(false); // Stop dragging image
+    
     // After drawing, redraw the entire canvas from the `paths` state to ensure consistent rendering
     redrawCanvas();
   }, [redrawCanvas]);
@@ -247,6 +360,10 @@ const CanvasDrawingApp = () => {
   const handleResetCanvas = () => {
     setPaths([]); // Clear all paths
     setUndoStack([]); // Clear undo stack as well
+    setUploadedImage(null); // Clear uploaded image
+    setImagePosition({ x: 0, y: 0 });
+    setImageRotation(0);
+    setImageScale(1);
   };
 
   // Handler for Undo action
@@ -372,6 +489,7 @@ const CanvasDrawingApp = () => {
           align-items: center;
           gap: 0.75rem; /* gap-3 */
           width: 100%;
+          flex-wrap: wrap;
         }
 
         .tool-button {
@@ -421,6 +539,20 @@ const CanvasDrawingApp = () => {
         }
         .tool-button.inactive-brush:hover, .tool-button.inactive-eraser:hover {
           background-color: #fbcfe8;
+        }
+
+        /* New tool button styles for move, rotate, zoom */
+        .tool-button.active-move, .tool-button.active-rotate, .tool-button.active-zoom {
+          background-color: #3b82f6; /* bg-blue-500 */
+          color: #fff;
+          box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3), 0 4px 6px -2px rgba(59, 130, 246, 0.2);
+        }
+        .tool-button.inactive-move, .tool-button.inactive-rotate, .tool-button.inactive-zoom {
+          background-color: #dbeafe; /* bg-blue-100 */
+          color: #1e40af; /* text-blue-800 */
+        }
+        .tool-button.inactive-move:hover, .tool-button.inactive-rotate:hover, .tool-button.inactive-zoom:hover {
+          background-color: #bfdbfe; /* hover:bg-blue-200 */
         }
 
         .thickness-options-container {
@@ -554,7 +686,7 @@ const CanvasDrawingApp = () => {
         @media (min-width: 768px) {
             .canvas-container {
                 max-width: 64rem; /* md:max-w-screen-lg */
-                margin-top: 0; /* Remove top margin when next to controls */
+                margin-top: 0; /* Remove top margin when next to canvas */
                 order: 1; /* Place canvas on the left */
             }
         }
@@ -563,6 +695,45 @@ const CanvasDrawingApp = () => {
             max-width: 80rem; /* lg:max-w-screen-xl */
           }
         }
+
+        .image-upload-section {
+          margin-bottom: 1rem;
+          text-align: center;
+        }
+
+        .image-upload-button {
+          background-color: #10b981; /* bg-green-500 */
+          color: white;
+          padding: 0.5rem 1rem;
+          border: none;
+          border-radius: 0.5rem;
+          cursor: pointer;
+          font-weight: 600;
+          transition: all 200ms ease-in-out;
+        }
+
+        .image-upload-button:hover {
+          background-color: #059669; /* hover:bg-green-600 */
+          transform: scale(1.05);
+        }
+
+        .image-upload-input {
+          display: none;
+        }
+
+        .mode-indicator {
+          background-color: #f3f4f6; /* bg-gray-100 */
+          padding: 0.5rem;
+          border-radius: 0.5rem;
+          margin-bottom: 1rem;
+          text-align: center;
+          font-weight: 600;
+          color: #374151; /* text-gray-700 */
+        }
+
+        .mode-indicator.move { background-color: #dbeafe; color: #1e40af; }
+        .mode-indicator.rotate { background-color: #fef3c7; color: #92400e; }
+        .mode-indicator.zoom { background-color: #dcfce7; color: #166534; }
         `}
       </style>
 
@@ -594,6 +765,29 @@ const CanvasDrawingApp = () => {
         {/* Controls Section */}
         <div className="controls-section">
 
+          {/* Image Upload Section */}
+          <div className="image-upload-section">
+            <h2 className="section-title">Image</h2>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="image-upload-input"
+              id="image-upload"
+            />
+            <label htmlFor="image-upload" className="image-upload-button">
+              <ImageIcon style={{ width: '1rem', height: '1rem', marginRight: '0.5rem' }} />
+              Upload Image
+            </label>
+          </div>
+
+          {/* Mode Indicator */}
+          {uploadedImage && (
+            <div className={`mode-indicator ${selectedTool}`}>
+              Current Mode: {selectedTool.charAt(0).toUpperCase() + selectedTool.slice(1)}
+            </div>
+          )}
+
           {/* Brushes Section */}
           <div style={{ width: '100%' }}>
             <h2 className="section-title">Brushes</h2>
@@ -624,6 +818,39 @@ const CanvasDrawingApp = () => {
               </button>
             </div>
           </div>
+
+          {/* Image Tools Section (only show when image is uploaded) */}
+          {uploadedImage && (
+            <div style={{ width: '100%' }}>
+              <h2 className="section-title">Image Tools</h2>
+              <div className="tool-buttons-container">
+                {/* Move Tool Button */}
+                <button
+                  onClick={() => setSelectedTool('move')}
+                  className={`tool-button ${selectedTool === 'move' ? 'active-move' : 'inactive-move'}`}
+                  title="Move Image"
+                >
+                  <Move style={{ width: '2rem', height: '2rem' }} />
+                </button>
+                {/* Rotate Tool Button */}
+                <button
+                  onClick={() => setSelectedTool('rotate')}
+                  className={`tool-button ${selectedTool === 'rotate' ? 'active-rotate' : 'inactive-rotate'}`}
+                  title="Rotate Image (Fixed in Place)"
+                >
+                  <RotateCw style={{ width: '2rem', height: '2rem' }} />
+                </button>
+                {/* Zoom Tool Button */}
+                <button
+                  onClick={() => setSelectedTool('zoom')}
+                  className={`tool-button ${selectedTool === 'zoom' ? 'active-zoom' : 'inactive-zoom'}`}
+                  title="Zoom Image (Fixed in Place)"
+                >
+                  <ZoomIn style={{ width: '2rem', height: '2rem' }} />
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Thickness Section */}
           <div style={{ width: '100%', marginTop: '1rem' }}>

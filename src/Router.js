@@ -14,6 +14,7 @@ import UploadStep2 from "./UploadStep2"
 import UploadCombined from "./UploadCombined"
 import ColoringBoyAndGirl from "./ColoringBoyAndGirl"
 import TextCanvasEditor from "./TextCanvasEditor"
+import EnhancedTextCanvasEditor from "./EnhancedTextCanvasEditor"
 
 import BackgroundRemover from "./BackgroundRemover"
 import ImageFilters from "./ImageFilters";
@@ -70,6 +71,7 @@ const Router = () => {
       case "/UploadCombined" : return <UploadCombined />;
       case "/ColoringBoyAndGirl" : return <ColoringBoyAndGirl />;
       case "/TextCanvasEditor" : return <TextCanvasEditor />;
+      case "/EnhancedTextCanvasEditor" : return <EnhancedTextCanvasEditor />;
       case "/BackgroundRemover" : return <BackgroundRemover />;
       case "/ImageFilters" : return <ImageFilters />;
       case "/ImageUploader" : return <ImageUploader />;
@@ -145,6 +147,9 @@ const Router = () => {
     
     <li>
       <button onClick={() => navigate('/TextCanvasEditor')}>Text & Image Editor </button>
+    </li>
+    <li>
+      <button onClick={() => navigate('/EnhancedTextCanvasEditor')}>Enhanced Text & Image Editor </button>
     </li>
 
     <li>
