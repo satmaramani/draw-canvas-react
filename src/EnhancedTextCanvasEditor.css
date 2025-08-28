@@ -69,7 +69,10 @@
 .canvas-container canvas {
   border: 1px solid #dee2e6;
   width: 100%;
+  height: auto;
   display: block;
+  /* Ensure canvas maintains aspect ratio and proper positioning */
+  object-fit: contain;
 }
 
 .icon-toolbar {
@@ -141,6 +144,16 @@
   .icon-toolbar svg {
     width: 20px !important;
     height: 20px !important;
+  }
+  
+  /* Handle orientation changes better */
+  .canvas-container {
+    min-height: 400px; /* Ensure minimum height on mobile */
+    transition: all 0.3s ease; /* Smooth transitions for orientation changes */
+  }
+  
+  .canvas-container canvas {
+    max-height: 80vh; /* Prevent canvas from being too tall on mobile */
   }
 }
 

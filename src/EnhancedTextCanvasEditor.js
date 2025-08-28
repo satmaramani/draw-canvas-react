@@ -29,6 +29,7 @@ const EnhancedTextCanvasEditor = () => {
   const [rotatingId, setRotatingId] = useState(null);
   const [rotationStartData, setRotationStartData] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [orientation, setOrientation] = useState('portrait');
 
   const draw = () => {
     const canvas = canvasRef.current;
@@ -63,12 +64,28 @@ const EnhancedTextCanvasEditor = () => {
       ctx.restore();
     });
   };
+
+  // Function to recalculate positions when canvas dimensions change
+  const recalculatePositions = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const canvasWidth = rect.width;
+    const canvasHeight = rect.height;
+    
+    // If canvas dimensions changed significantly, adjust positions
+    if (canvasWidth > 0 && canvasHeight > 0) {
+      // Force a redraw to ensure everything is in sync
+      draw();
+    }
+  };
   
   useEffect(() => {
     draw();
   }, [texts, images]);
 
-  // Detect mobile device
+  // Detect mobile device and handle orientation changes
   useEffect(() => {
     const checkMobile = () => {
       const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
@@ -76,10 +93,65 @@ const EnhancedTextCanvasEditor = () => {
       setIsMobile(isMobileDevice);
     };
     
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
+    const handleOrientationChange = () => {
+      // Update orientation state
+      const newOrientation = window.innerWidth > window.innerHeight ? 'landscape' : 'portrait';
+      setOrientation(newOrientation);
+      
+      // Force a re-render and recalculate positions after orientation change
+      setTimeout(() => {
+        // Trigger a redraw to ensure canvas and DOM are in sync
+        draw();
+        
+        // Force React to re-render the component
+        setImages(prev => [...prev]);
+        setTexts(prev => [...prev]);
+        
+        // Recalculate positions after orientation change
+        recalculatePositions();
+      }, 300); // Increased delay to ensure orientation change is complete
+    };
     
-    return () => window.removeEventListener('resize', checkMobile);
+    checkMobile();
+    
+    // Set initial orientation
+    const initialOrientation = window.innerWidth > window.innerHeight ? 'landscape' : 'portrait';
+    setOrientation(initialOrientation);
+    
+    window.addEventListener('resize', checkMobile);
+    window.addEventListener('orientationchange', handleOrientationChange);
+    
+    // Also listen for screen orientation changes (more reliable on some devices)
+    if (window.screen && window.screen.orientation) {
+      window.screen.orientation.addEventListener('change', handleOrientationChange);
+    }
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      window.removeEventListener('orientationchange', handleOrientationChange);
+      if (window.screen && window.screen.orientation) {
+        window.screen.orientation.removeEventListener('change', handleOrientationChange);
+      }
+    };
+  }, []);
+
+  // Monitor canvas container size changes
+  useEffect(() => {
+    const canvasContainer = canvasRef.current?.parentElement;
+    if (!canvasContainer) return;
+    
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        // When canvas container size changes, recalculate positions
+        recalculatePositions();
+      }
+    });
+    
+    resizeObserver.observe(canvasContainer);
+    
+    return () => {
+      resizeObserver.disconnect();
+    };
   }, []);
 
   const addText = () => {
@@ -604,10 +676,12 @@ const EnhancedTextCanvasEditor = () => {
         Images count: {images.length}<br/>
         Mouse position: {hoveredId ? 'Hovering over element' : 'Not hovering'}<br/>
         Device: {isMobile ? '📱 Mobile' : '🖥️ Desktop'}<br/>
+        Orientation: {isMobile ? `📱 ${orientation}` : '🖥️ Desktop'}<br/>
         <strong>Instructions:</strong> Upload an image, then hover over it to see the red border and resize handles<br/>
         <strong>Rotation:</strong> Drag the blue rotation icon to rotate the image smoothly<br/>
         <strong>Mobile:</strong> {isMobile ? 'Touch and drag to interact with images' : 'Mouse hover and drag on desktop'}<br/>
-        <strong>Note:</strong> Hover area extends 50px around images to keep controls visible
+        <strong>Note:</strong> Hover area extends 50px around images to keep controls visible<br/>
+        <strong>Mobile Tip:</strong> {isMobile ? 'Rotate device to see orientation change handling' : ''}
       </div>
       <input
         type="file"
