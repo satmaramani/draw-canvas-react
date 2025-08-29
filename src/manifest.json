@@ -1,0 +1,15 @@
+{
+    "short_name": "react-creative-testing",
+    "name": "React Creative Testing",
+    "icons": [
+      {
+        "src": "logo192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      }
+    ],
+    "start_url": ".",
+    "display": "standalone",
+    "theme_color": "#000000",
+    "background_color": "#ffffff"
+  }
