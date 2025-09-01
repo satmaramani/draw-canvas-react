@@ -1,0 +1,200 @@
+/* Admin Timer Display */
+.admin-timer {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 15px 20px;
+  border-radius: 10px;
+  z-index: 9999;
+  font-family: 'Arial', sans-serif;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.timer-content {
+  text-align: center;
+}
+
+.timer-text {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.timer-progress {
+  width: 100px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.timer-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+  transition: width 1s linear;
+  border-radius: 3px;
+}
+
+/* Admin Modal */
+.admin-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  backdrop-filter: blur(5px);
+}
+
+.admin-modal {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.admin-modal-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.admin-modal-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.admin-modal-body {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.admin-modal-body p {
+  margin: 0 0 15px 0;
+  color: #666;
+  font-size: 16px;
+}
+
+.pin-input {
+  width: 200px;
+  height: 50px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  font-size: 24px;
+  text-align: center;
+  letter-spacing: 8px;
+  font-weight: bold;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.pin-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.pin-input::placeholder {
+  letter-spacing: 8px;
+  color: #ccc;
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 14px;
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+.admin-modal-footer {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.cancel-btn, .submit-btn {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 100px;
+}
+
+.cancel-btn {
+  background: #f8f9fa;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
+}
+
+.cancel-btn:hover {
+  background: #e9ecef;
+  color: #495057;
+}
+
+.submit-btn {
+  background: #007bff;
+  color: white;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background: #0056b3;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.submit-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .admin-modal {
+    padding: 20px;
+    margin: 20px;
+  }
+  
+  .pin-input {
+    width: 180px;
+    height: 45px;
+    font-size: 20px;
+  }
+  
+  .admin-modal-header h3 {
+    font-size: 20px;
+  }
+  
+  .timer-text {
+    font-size: 14px;
+  }
+  
+  .timer-progress {
+    width: 80px;
+  }
+}

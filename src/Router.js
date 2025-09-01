@@ -38,6 +38,8 @@ import ReplicateImageGenerator from "./ReplicateImageGenerator";
 import AIImageGenerator from "./AIImageGenerator";
 import ImageRotator from "./ImageRotator";
 import LightXImageTransformer from "./LightXImageTransformer";
+import AdminTest from "./components/AdminTest";
+import BrowserTestDemo from "./components/BrowserTestDemo";
 
 const Home = () => (
   <div className="home-container">
@@ -93,6 +95,8 @@ const Router = () => {
       case '/AIImageGenerator' : return <AIImageGenerator />;
       case '/ImageRotator' : return <ImageRotator />;
       case '/LightXImageTransformer' : return <LightXImageTransformer />;
+      case '/AdminTest' : return <AdminTest />;
+      case '/BrowserTestDemo' : return <BrowserTestDemo />;
 
       default:
         return (
@@ -233,6 +237,13 @@ const Router = () => {
 
     <li>
       <button onClick={() => navigate('/LightXImageTransformer')}>LightX AI Image Transformer</button>
+    </li>
+
+    <li>
+      <button onClick={() => navigate('/AdminTest')} style={{backgroundColor: '#ff6b6b', color: 'white'}}>🔧 Admin Test</button>
+    </li>
+    <li>
+      <button onClick={() => navigate('/BrowserTestDemo')} style={{backgroundColor: '#28a745', color: 'white'}}>🖥️ Browser Demo</button>
     </li>
 
   </ul>
